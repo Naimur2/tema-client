@@ -1,26 +1,126 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from "react-router-dom";
+import { Suspense, lazy } from "react";
+import Loader from "components/Loader";
+import Layout from "layouts/navbar-sidebar";
 
-function App() {
+const LoginScreen = lazy(() => import("./screens/auth/sign-in"));
+
+const EventsList = lazy(() => import("./screens/event"));
+const EditEvent = lazy(() => import("./screens/event/edit-event"));
+const CreateEvent = lazy(() => import("./screens/event/create-event"));
+
+const TeamList = lazy(() => import("./screens/team"));
+const EditTeam = lazy(() => import("./screens/team/edit-team"));
+const CreateTeam = lazy(() => import("./screens/team/create-team"));
+const FolderList = lazy(() => import("./screens/folder"));
+const EditFolder = lazy(() => import("./screens/folder/edit-folder"));
+const CreateFolder = lazy(() => import("./screens/folder/create-folder"));
+const Dashboard = lazy(() => import("./screens/dashboard"));
+const UsersList = lazy(() => import("./screens/users"));
+
+export default function AppRoutes() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Suspense fallback={<Loader isLoading />}>
+              <LoginScreen />
+            </Suspense>
+          }
+        />
+        <Route path="dashboard/*" element={<Layout />}>
+          <Route
+            path=""
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <Dashboard />
+              </Suspense>
+            }
+          />
+          <Route
+            path="users"
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <UsersList />
+              </Suspense>
+            }
+          />
+          <Route
+            path="events"
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <EventsList />
+              </Suspense>
+            }
+          />
+          <Route
+            path="events/:id"
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <EditEvent />
+              </Suspense>
+            }
+          />
+          <Route
+            path="events/create"
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <CreateEvent />
+              </Suspense>
+            }
+          />
+          <Route
+            path="teams"
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <TeamList />
+              </Suspense>
+            }
+          />
+          <Route
+            path="teams/:id"
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <EditTeam />
+              </Suspense>
+            }
+          />
+          <Route
+            path="teams/create"
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <CreateTeam />
+              </Suspense>
+            }
+          />
+          <Route
+            path="folders"
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <FolderList />
+              </Suspense>
+            }
+          />
+          <Route
+            path="folders/:id"
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <EditFolder />
+              </Suspense>
+            }
+          />
+          <Route
+            path="folders/create"
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <CreateFolder />
+              </Suspense>
+            }
+          />
+        </Route>
+      </Routes>
+    </>
   );
 }
-
-export default App;
