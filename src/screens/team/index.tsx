@@ -1,10 +1,29 @@
 import { Button } from "flowbite-react";
 import { useNavigate } from "react-router";
 import { useDeleteTeamMutation, useGetTeamsQuery } from "store/apis/team";
-import DataTable from "react-data-table-component";
+import DataTable, { TableColumn } from "react-data-table-component";
 import MySwal from "components/MySwal";
 
-const Actions = ({ row }: any) => {
+//
+interface ITeam {
+  _id?: string;
+  name?: string;
+  color?: string;
+  score?: number;
+  __v?: number;
+  image?: string;
+}
+
+interface ITeamAction {
+  row?: ITeam;
+}
+
+interface ITeamData {
+  message?: string;
+  data?: ITeam[];
+}
+
+const Actions = ({ row }: ITeamAction) => {
   const navigate = useNavigate();
   const [deleteItem, { isLoading }] = useDeleteTeamMutation();
 
@@ -18,7 +37,7 @@ const Actions = ({ row }: any) => {
       cancelButtonText: "No, keep it",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteItem(row._id).unwrap();
+        await deleteItem(row?._id).unwrap();
         MySwal.fire("Deleted!", "Team has been deleted.", "success");
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
         MySwal.fire("Cancelled", "Team is safe :)", "error");
@@ -29,47 +48,49 @@ const Actions = ({ row }: any) => {
   return (
     <div className="flex gap-2 justify-center items-center">
       <Button
-        onClick={() => navigate(`/dashboard/teams/${row._id}`)}
+        onClick={() => navigate(`/dashboard/teams/${row?._id}`)}
         className="bg-primary-900 hover:bg-primary-700"
       >
         Edit
       </Button>
-      <Button
-        onClick={handleDelete}
-        className="bg-red-800 hover:bg-red-600"
-      >
+      <Button onClick={handleDelete} className="bg-red-800 hover:bg-red-600">
         Delete
       </Button>
     </div>
   );
 };
 
-const columns = [
+const columns: TableColumn<ITeam>[] = [
   {
     name: "Team name",
-    selector: (row: any) => row.name,
+    selector: (row) => row?.name || "",
   },
   {
     name: "Score",
-    selector: (row: any) => row.score,
+    selector: (row) => row?.score || 0,
   },
   {
     name: "Color",
-    selector: (row: any) => {
+    cell: (row) => {
+      console.log("team row: ", row);
       return (
         <div
           className="w-5 h-5 rounded-full"
-          style={{ backgroundColor: row.color }}
+          style={{ backgroundColor: row?.color ?? "#000" }}
         ></div>
       );
     },
   },
   {
     name: "Image",
-    selector: (row: any) => {
+    cell: (row) => {
       if (row.image) {
         return (
-          <img src={row.image} alt="" className="w-10 h-10 rounded-full" />
+          <img
+            src={row?.image || ""}
+            alt=""
+            className="w-10 h-10 rounded-full"
+          />
         );
       }
       return null;
@@ -77,12 +98,13 @@ const columns = [
   },
   {
     name: "Actions",
-    selector: (row: any) => <Actions row={row} />,
+    cell: (row) => <Actions row={row} />,
   },
 ];
 
 export default function Data() {
   const { data, isLoading, isError } = useGetTeamsQuery(undefined);
+  console.log("team table data: ", data);
   const navigate = useNavigate();
 
   return (
@@ -98,7 +120,7 @@ export default function Data() {
       <div className="mt-4">
         <DataTable
           columns={columns}
-          data={data?.data || []}
+          data={(data as ITeamData)?.data || []}
           progressPending={isLoading}
           progressComponent={
             <div className="flex justify-center">

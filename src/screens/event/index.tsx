@@ -1,29 +1,47 @@
 import { Button } from "flowbite-react";
 import { useNavigate } from "react-router";
 import { useDeleteTeamMutation, useGetTeamsQuery } from "store/apis/team";
-import DataTable from "react-data-table-component";
+import DataTable, { TableColumn } from "react-data-table-component";
 import MySwal from "components/MySwal";
-import { useDeleteEventMutation } from "store/apis/event";
-import Loader from "components/Loader";
+import { useDeleteEventMutation, useGetEventsQuery } from "store/apis/event";
+import { formatShortSocialDateTime } from "utils/date-formatter";
 
-const Actions = ({ row }: any) => {
+interface IEvent {
+  _id?: string;
+  name?: string;
+  team_id?: string;
+  starting_date?: string;
+  ending_date?: string;
+  __v?: number;
+}
+
+interface IEventAction {
+  row?: IEvent;
+}
+
+interface ITeamData {
+  message?: string;
+  data?: IEvent[];
+}
+
+const Actions = ({ row }: IEventAction) => {
   const navigate = useNavigate();
-  const [deleteItem, { isLoading }] = useDeleteEventMutation();
+  const [deleteEvent, { isLoading }] = useDeleteEventMutation();
 
   const handleDelete = async () => {
     MySwal.fire({
       title: "Are you sure?",
-      text: "You will not be able to recover this team!",
+      text: "You will not be able to recover this event!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes, delete it!",
       cancelButtonText: "No, keep it",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteItem(row._id).unwrap();
-        MySwal.fire("Deleted!", "Team has been deleted.", "success");
+        await deleteEvent(row?._id).unwrap();
+        MySwal.fire("Deleted!", "Event has been deleted.", "success");
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
-        MySwal.fire("Cancelled", "Team is safe :)", "error");
+        MySwal.fire("Cancelled", "Event is safe :)", "error");
       }
     });
   };
@@ -31,7 +49,7 @@ const Actions = ({ row }: any) => {
   return (
     <div className="flex gap-2 justify-center items-center">
       <Button
-        onClick={() => navigate(`/dashboard/teams/${row._id}`)}
+        onClick={() => navigate(`/dashboard/events/${row?._id}`)}
         className="bg-primary-900 hover:bg-primary-700"
       >
         Edit
@@ -39,51 +57,44 @@ const Actions = ({ row }: any) => {
       <Button onClick={handleDelete} className="bg-red-800 hover:bg-red-600">
         Delete
       </Button>
-      <Loader isLoading={isLoading} />
     </div>
-
   );
 };
 
-const columns = [
+const columns: TableColumn<IEvent>[] = [
   {
-    name: "Team name",
-    selector: (row: any) => row.name,
+    name: "Name",
+    selector: (row) => row?.name || "",
+    width: "180px",
+    wrap: true,
   },
   {
-    name: "Score",
-    selector: (row: any) => row.score,
+    name: "Team ID",
+    selector: (row) => row?.team_id || 0,
+    wrap: true,
   },
   {
-    name: "Color",
-    selector: (row: any) => {
-      return (
-        <div
-          className="w-5 h-5 rounded-full"
-          style={{ backgroundColor: row.color }}
-        ></div>
-      );
-    },
+    name: "Starting Date",
+    selector: (row) => formatShortSocialDateTime(row?.starting_date || ""),
+    minWidth: "200px",
+    wrap: true,
   },
   {
-    name: "Image",
-    selector: (row: any) => {
-      if (row.image) {
-        return (
-          <img src={row.image} alt="" className="w-10 h-10 rounded-full" />
-        );
-      }
-      return null;
-    },
+    name: "Ending Date",
+    selector: (row) => formatShortSocialDateTime(row?.ending_date || ""),
+    minWidth: "200px",
+    wrap: true,
   },
   {
     name: "Actions",
-    selector: (row: any) => <Actions row={row} />,
+    cell: (row) => <Actions row={row} />,
+    width: "180px",
   },
 ];
 
 export default function Data() {
-  const { data, isLoading, isError } = useGetTeamsQuery(undefined);
+  const { data, isLoading, isError } = useGetEventsQuery(undefined);
+  console.log("event table data: ", data);
   const navigate = useNavigate();
 
   return (
@@ -99,7 +110,7 @@ export default function Data() {
       <div className="mt-4">
         <DataTable
           columns={columns}
-          data={data?.data || []}
+          data={(data as ITeamData)?.data || []}
           progressPending={isLoading}
           progressComponent={
             <div className="flex justify-center">

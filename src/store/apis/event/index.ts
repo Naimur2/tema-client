@@ -10,6 +10,7 @@ export const eventApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["events"],
     }),
+    // work here
     getEvents: builder.query({
       query: () => ({
         url: "/events",

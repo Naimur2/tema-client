@@ -8,68 +8,76 @@ import { useNavigate } from "react-router";
 import MySwal from "components/MySwal";
 import { useUploadImageMutation } from "store/apis/uploadImage";
 
+interface ITeamInitialValues {
+  name: string;
+  color: string;
+  score: number;
+  image: undefined | File | string;
+}
+
 export default function CreateItem() {
   const [addTeam, { isLoading }] = useCreateTeamMutation();
   const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation();
 
   const navigate = useNavigate();
-  const formik = useFormik({
-    initialValues: {
-      name: "",
-      color: "",
-      score: 0,
-      image: undefined,
-    },
-    onSubmit: async (values: any) => {
-      try {
-        const formData = new FormData();
-        formData.append("image", values.image);
+  const { getFieldProps, handleSubmit, setFieldValue, errors, touched } =
+    useFormik<ITeamInitialValues>({
+      initialValues: {
+        name: "",
+        color: "",
+        score: 0,
+        image: undefined,
+      },
+      onSubmit: async (values: any) => {
+        try {
+          const formData = new FormData();
+          formData.append("image", values.image);
 
-        const { data } = await uploadImage(formData).unwrap();
+          const { data } = await uploadImage(formData).unwrap();
 
-        const submitedValue = {
-          name: values.name,
-          color: values.color,
-          score: values.score,
-          image: data?.[0].fileUrl,
-        };
+          const submitedValue = {
+            name: values.name,
+            color: values.color,
+            score: values.score,
+            image: data?.[0].fileUrl,
+          };
 
-        await addTeam(submitedValue).unwrap();
-        MySwal.fire({
-          title: "Success",
-          text: "Team created successfully",
-          icon: "success",
-        });
-        navigate(-1);
-      } catch (error:any) {
-        MySwal.fire({
-          title: "Error",
-          text: error?.data?.message || "Something went wrong",
-          icon: "error",
-        });
-      }
-    },
-    validationSchema: Yup.object({
-      name: Yup.string().required("Required"),
-      color: Yup.string().required("Required"),
-      score: Yup.string().required("Required"),
-      image: Yup.string().required("Required"),
-    }),
-  });
+          await addTeam(submitedValue).unwrap();
+          MySwal.fire({
+            title: "Success",
+            text: "Team created successfully",
+            icon: "success",
+          });
+          navigate(-1);
+        } catch (error: any) {
+          MySwal.fire({
+            title: "Error",
+            text: error?.data?.message || "Something went wrong",
+            icon: "error",
+          });
+        }
+      },
+      validationSchema: Yup.object({
+        name: Yup.string().required("Required"),
+        color: Yup.string().required("Required"),
+        score: Yup.string().required("Required"),
+        image: Yup.string().required("Required"),
+      }),
+    });
 
   return (
     <div className="grid gap-4">
       <h2 className="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
         Create Team
       </h2>
-      <form onSubmit={formik.handleSubmit} className="mt-10">
+      <form onSubmit={handleSubmit} className="mt-10">
         <div className="mb-4 flex flex-col">
           <Label htmlFor="name">Team Name</Label>
           <TextInput
             id="name"
             placeholder="Enter team name"
-            helperText={formik.errors.name}
-            {...formik.getFieldProps("name")}
+            helperText={touched.name && errors.name}
+            {...getFieldProps("name")}
           />
         </div>
         <div className="mb-4 flex flex-col">
@@ -79,10 +87,10 @@ export default function CreateItem() {
             placeholder="Enter team color"
             className="w-full  border border-gray-300 rounded-md h-10"
             type="color"
-            {...formik.getFieldProps("color")}
+            {...getFieldProps("color")}
           />
-          {formik.errors.color && (
-            <p className="text-red-500">{formik.errors.color}</p>
+          {touched.color && errors.color && (
+            <p className="text-red-500">{errors.color}</p>
           )}
         </div>
 
@@ -91,8 +99,8 @@ export default function CreateItem() {
           <TextInput
             id="score"
             placeholder="Enter team score"
-            helperText={formik.errors.score}
-            {...formik.getFieldProps("score")}
+            helperText={touched.score && errors.score}
+            {...getFieldProps("score")}
           />
         </div>
 
@@ -105,12 +113,12 @@ export default function CreateItem() {
             name="image"
             accept="image/*"
             onChange={(event: any) => {
-              formik.setFieldValue("image", event.currentTarget.files[0]);
+              setFieldValue("image", event.currentTarget.files[0]);
             }}
             // value={formik?.values?.image?.name}
           />
-          {formik.errors.image && (
-            <p className="text-red-500">{formik.errors.image}</p>
+          {touched.image && errors.image && (
+            <p className="text-red-500">{errors.image}</p>
           )}
         </div>
 

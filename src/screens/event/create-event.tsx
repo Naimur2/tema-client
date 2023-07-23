@@ -1,59 +1,62 @@
-import React from "react";
 import { useFormik } from "formik";
 import { Button, FileInput, Label, TextInput, Select } from "flowbite-react";
 import Loader from "components/Loader";
-import { useGetTeamByIdQuery, useGetTeamsQuery } from "store/apis/team";
+import { useGetTeamsQuery } from "store/apis/team";
 import * as Yup from "yup";
 import { useNavigate } from "react-router";
 import MySwal from "components/MySwal";
-
 import { useCreateEventMutation } from "store/apis/event";
 
-export default function CreateEvent() {
+interface ITeamInitialValues {
+  name: string;
+  team_id: string;
+  starting_date: string;
+  ending_date: string;
+}
+
+const CreateEvent = () => {
   const [addItem, { isLoading }] = useCreateEventMutation();
   const { data: teamsData, isLoading: teamsLoading } =
     useGetTeamsQuery(undefined);
 
-
-
-
   const navigate = useNavigate();
-  const formik = useFormik({
-    initialValues: {
-      name: "",
-      team_id: "",
-      starting_date: "",
-      ending_date: "",
-    },
-    onSubmit: async (values: any) => {
-      try {
-        await addItem({
-          name: values.name,
-          team_id: values.team_id,
-          starting_date: new Date(values.starting_date),
-          ending_date: new Date(values.ending_date),
-        }).unwrap();
-        MySwal.fire({
-          title: "Success",
-          text: "Event aded successfully",
-          icon: "success",
-        });
-        navigate(-1);
-      } catch (error: any) {
-        MySwal.fire({
-          title: "Error",
-          text: error?.data?.message || "Something went wrong",
-          icon: "error",
-        });
-      }
-    },
-    validationSchema: Yup.object({
-      name: Yup.string().required("Required"),
-      team_id: Yup.string().required("Required"),
-      starting_date: Yup.string().required("Required"),
-      ending_date: Yup.string().required("Required"),
-    }),
-  });
+  const { getFieldProps, handleSubmit, errors, touched } =
+    useFormik<ITeamInitialValues>({
+      initialValues: {
+        name: "",
+        team_id: "",
+        starting_date: "",
+        ending_date: "",
+      },
+      onSubmit: async (values: any) => {
+        try {
+          await addItem({
+            name: values.name,
+            team_id: values.team_id,
+            starting_date: new Date(values.starting_date),
+            ending_date: new Date(values.ending_date),
+          }).unwrap();
+          MySwal.fire({
+            title: "Success",
+            text: "Event aded successfully",
+            icon: "success",
+          });
+          navigate(-1);
+        } catch (error: any) {
+          MySwal.fire({
+            title: "Error",
+            text: error?.data?.message || "Something went wrong",
+            icon: "error",
+          });
+        }
+      },
+      validationSchema: Yup.object({
+        name: Yup.string().required("Required"),
+        team_id: Yup.string().required("Required"),
+        starting_date: Yup.string().required("Required"),
+        ending_date: Yup.string().required("Required"),
+      }),
+    });
 
   const teamArray = teamsData?.data?.map((team: any) => ({
     label: team.name,
@@ -65,21 +68,21 @@ export default function CreateEvent() {
       <h2 className="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
         Create event
       </h2>
-      <form onSubmit={formik.handleSubmit} className="mt-10 grid gap-4">
+      <form onSubmit={handleSubmit} className="mt-10 grid gap-4">
         <div className="mb-4 flex flex-col gap-4">
           <Label htmlFor="name">Event Name</Label>
           <TextInput
             id="name"
             placeholder="Enter event name"
-            helperText={formik.errors.name}
-            {...formik.getFieldProps("name")}
+            helperText={touched.name && errors.name}
+            {...getFieldProps("name")}
           />
         </div>
         <div className="mb-4 flex flex-col gap-4">
           <Label htmlFor="team_id">Team Name</Label>
           <Select
-            {...formik.getFieldProps("team_id")}
-            helperText={formik.errors.team_id}
+            {...getFieldProps("team_id")}
+            helperText={touched.team_id && errors.team_id}
             id="team_id"
           >
             <option value="">Select team</option>
@@ -97,8 +100,8 @@ export default function CreateEvent() {
             <TextInput
               id="starting_date"
               placeholder="Enter starting date"
-              helperText={formik.errors.starting_date}
-              {...formik.getFieldProps("starting_date")}
+              helperText={touched.starting_date && errors.starting_date}
+              {...getFieldProps("starting_date")}
               type="date"
             />
           </div>
@@ -107,8 +110,8 @@ export default function CreateEvent() {
             <TextInput
               id="ending_date"
               placeholder="Enter starting date"
-              helperText={formik.errors.ending_date}
-              {...formik.getFieldProps("ending_date")}
+              helperText={touched.ending_date && errors.ending_date}
+              {...getFieldProps("ending_date")}
               type="date"
             />
           </div>
@@ -127,4 +130,6 @@ export default function CreateEvent() {
       </form>
     </div>
   );
-}
+};
+
+export default CreateEvent;
