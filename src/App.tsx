@@ -2,7 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import Loader from "components/Loader";
 import Layout from "layouts/navbar-sidebar";
-
 const LoginScreen = lazy(() => import("./screens/auth/sign-in"));
 
 const EventsList = lazy(() => import("./screens/event"));
@@ -13,7 +12,7 @@ const TeamList = lazy(() => import("./screens/team"));
 const EditTeam = lazy(() => import("./screens/team/edit-team"));
 const CreateTeam = lazy(() => import("./screens/team/create-team"));
 const FolderList = lazy(() => import("./screens/folder"));
-const EditFolder = lazy(() => import("./screens/folder/edit-folder"));
+const ViewFolder = lazy(() => import("./screens/folder/view-folder"));
 const CreateFolder = lazy(() => import("./screens/folder/create-folder"));
 const Dashboard = lazy(() => import("./screens/dashboard"));
 const UsersList = lazy(() => import("./screens/users"));
@@ -107,7 +106,7 @@ export default function AppRoutes() {
             path="folders/:id"
             element={
               <Suspense fallback={<Loader isLoading />}>
-                <EditFolder />
+                <ViewFolder />
               </Suspense>
             }
           />

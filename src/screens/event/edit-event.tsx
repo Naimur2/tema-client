@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { Button, FileInput, Label, TextInput, Select } from "flowbite-react";
 import Loader from "components/Loader";
@@ -5,9 +6,15 @@ import { useGetTeamsQuery } from "store/apis/team";
 import * as Yup from "yup";
 import { useNavigate } from "react-router";
 import MySwal from "components/MySwal";
-import { useCreateEventMutation } from "store/apis/event";
+import {
+  useCreateEventMutation,
+  useGetEventByIdQuery,
+  useUpdateEventMutation,
+} from "store/apis/event";
+import { useEffect } from "react";
+import dayjs from "dayjs";
 
-interface ITeamInitialValues {
+interface IEventInitialValues {
   name: string;
   team_id: string;
   starting_date: string;
@@ -15,53 +22,94 @@ interface ITeamInitialValues {
 }
 
 const EditEvent = () => {
-  const [addItem, { isLoading }] = useCreateEventMutation();
+  const { id } = useParams();
+  const { data } = useGetEventByIdQuery(id, {
+    skip: !id,
+  });
+
+  const [updateEvent, { isLoading }] = useUpdateEventMutation();
   const { data: teamsData, isLoading: teamsLoading } =
     useGetTeamsQuery(undefined);
 
   const navigate = useNavigate();
-  const { getFieldProps, handleSubmit, errors, touched } =
-    useFormik<ITeamInitialValues>({
-      initialValues: {
-        name: "",
-        team_id: "",
-        starting_date: "",
-        ending_date: "",
-      },
-      onSubmit: async (values: any) => {
-        try {
-          await addItem({
-            name: values.name,
-            team_id: values.team_id,
-            starting_date: new Date(values.starting_date),
-            ending_date: new Date(values.ending_date),
-          }).unwrap();
-          MySwal.fire({
-            title: "Success",
-            text: "Event aded successfully",
-            icon: "success",
-          });
-          navigate(-1);
-        } catch (error: any) {
-          MySwal.fire({
-            title: "Error",
-            text: error?.data?.message || "Something went wrong",
-            icon: "error",
-          });
-        }
-      },
-      validationSchema: Yup.object({
-        name: Yup.string().required("Required"),
-        team_id: Yup.string().required("Required"),
-        starting_date: Yup.string().required("Required"),
-        ending_date: Yup.string().required("Required"),
-      }),
-    });
+  const {
+    getFieldProps,
+    handleSubmit,
+    setFieldValue,
+    errors,
+    touched,
+    values,
+  } = useFormik<IEventInitialValues>({
+    initialValues: {
+      name: "",
+      team_id: "",
+      starting_date: "",
+      ending_date: "",
+    },
+    onSubmit: async (values) => {
+      try {
+        await updateEvent({
+          id,
+          name: values.name,
+          team_id: values.team_id,
+          starting_date: new Date(values.starting_date),
+          ending_date: new Date(values.ending_date),
+        }).unwrap();
+        MySwal.fire({
+          title: "Success",
+          text: "Event edited successfully",
+          icon: "success",
+        });
+        navigate(-1);
+      } catch (error: any) {
+        MySwal.fire({
+          title: "Error",
+          text: error?.data?.message || "Something went wrong",
+          icon: "error",
+        });
+      }
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().required("Required"),
+      team_id: Yup.string().required("Required"),
+      starting_date: Yup.string().required("Required"),
+      ending_date: Yup.string().required("Required"),
+    }),
+  });
 
   const teamArray = teamsData?.data?.map((team: any) => ({
     label: team.name,
     value: team._id,
   }));
+
+  console.log("edit event form values: ", values);
+
+  useEffect(() => {
+    console.log("get single event data: ", data);
+    if (data) {
+      setFieldValue("name", data?.data?.name);
+      setFieldValue("team_id", data?.data?.team_id);
+      setFieldValue(
+        "starting_date",
+        dayjs(data?.data?.starting_date).format("YYYY-MM-DD")
+      );
+      setFieldValue(
+        "ending_date",
+        dayjs(data?.data?.ending_date).format("YYYY-MM-DD")
+      );
+
+      // convert image url to file
+      // if (data?.data?.image) {
+      //   fetch(data?.data?.image)
+      //     .then((res) => res.blob())
+      //     .then((blob) => {
+      //       const file = new File([blob], "image.png", { type: "image/png" });
+      //       setFieldValue("image", file);
+      //     });
+      // }
+      // console.log(data?.data?.image);
+    }
+  }, [data]);
 
   return (
     <div className="grid gap-4">
@@ -106,7 +154,7 @@ const EditEvent = () => {
             />
           </div>
           <div className="mb-4 flex flex-col gap-4">
-            <Label htmlFor="ending_date">Event Start date</Label>
+            <Label htmlFor="ending_date">Event End date</Label>
             <TextInput
               id="ending_date"
               placeholder="Enter starting date"

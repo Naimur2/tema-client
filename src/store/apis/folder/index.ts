@@ -10,9 +10,18 @@ export const folderApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["folders"],
     }),
+    // new
+    createNewFolder: builder.mutation({
+      query: (body) => ({
+        url: `/folders`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["folders"],
+    }),
     getFolders: builder.query({
       query: () => ({
-        url: "/folders",
+        url: "/folders?noParent=true",
         method: "GET",
       }),
       providesTags: ["folders"],
@@ -27,6 +36,14 @@ export const folderApiSlice = apiSlice.injectEndpoints({
     updateFolder: builder.mutation({
       query: ({ id, ...body }) => ({
         url: `/folders/${id}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["folders"],
+    }),
+    updateFile: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/folders/files/${id}`,
         method: "PUT",
         body,
       }),
@@ -48,4 +65,6 @@ export const {
   useGetFolderByIdQuery,
   useUpdateFolderMutation,
   useDeleteFolderMutation,
+  useUpdateFileMutation,
+  useCreateNewFolderMutation,
 } = folderApiSlice;

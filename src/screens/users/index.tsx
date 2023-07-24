@@ -4,8 +4,11 @@ import DataTable, { TableColumn } from "react-data-table-component";
 import { useGetUsersQuery } from "store/apis/auth";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { formatShortSocialDateTime } from "utils/date-formatter";
+import CustomModal from "components/common/CustomModal";
+import { AiFillEye } from "react-icons/ai";
+import ViewAUserRow from "components/ViewAUserRow";
 
-interface IUser {
+export interface IUser {
   _id?: string;
   first_name?: string;
   last_name?: string;
@@ -51,50 +54,67 @@ const columns: TableColumn<IUser>[] = [
     minWidth: "150px",
     wrap: true,
   },
+  // {
+  //   name: "Shirt Size",
+  //   selector: (row) => row?.shirt_size || "",
+  //   minWidth: "30px",
+  //   wrap: true,
+  // },
+  // {
+  //   name: "Arrival Date",
+  //   selector: (row) => formatShortSocialDateTime(row?.arrival_date || ""),
+  //   minWidth: "200px",
+  //   wrap: true,
+  // },
+  // {
+  //   name: "Departure Date",
+  //   selector: (row) => formatShortSocialDateTime(row?.departure_date || ""),
+  //   minWidth: "200px",
+  //   wrap: true,
+  // },
+  // {
+  //   name: "Bed Preference",
+  //   selector: (row) => row?.bed_preference || "",
+  //   width: "130px",
+  //   wrap: true,
+  // },
+  // {
+  //   name: "Role",
+  //   selector: (row) => row?.role || "",
+  // },
+  // {
+  //   name: "Active",
+  //   cell: (row) => {
+  //     if (row?.is_active) return <FaCheck className="w-4 h-4" color="green" />;
+  //     else if (row?.is_active === false)
+  //       return <FaTimes className="w-4 h-4" color="red" />;
+  //     else return "N/A";
+  //   },
+  //   width: "80px",
+  // },
   {
-    name: "Shirt Size",
-    selector: (row) => row?.shirt_size || "",
-    minWidth: "30px",
-    wrap: true,
-  },
-  {
-    name: "Arrival Date",
-    selector: (row) => formatShortSocialDateTime(row?.arrival_date || ""),
-    minWidth: "200px",
-    wrap: true,
-  },
-  {
-    name: "Departure Date",
-    selector: (row) => formatShortSocialDateTime(row?.departure_date || ""),
-    minWidth: "200px",
-    wrap: true,
-  },
-  {
-    name: "Bed Preference",
-    selector: (row) => row?.bed_preference || "",
-    width: "130px",
-    wrap: true,
-  },
-  {
-    name: "Role",
-    selector: (row) => row?.role || "",
-  },
-  {
-    name: "Active",
+    name: "View More",
     cell: (row) => {
-      if (row?.is_active) return <FaCheck className="w-4 h-4" color="green" />;
-      else if (row?.is_active === false)
-        return <FaTimes className="w-4 h-4" color="red" />;
-      else return "N/A";
+      return (
+        <CustomModal
+          title={`Detailed Row View For User: ${row?.username ?? "N/A"}`}
+          trigger={
+            <AiFillEye className="w-5 h-5 fill-white cursor-pointer mr-1" />
+          }
+        >
+          <ViewAUserRow row={row} />
+        </CustomModal>
+      );
     },
-    width: "80px",
+    width: "110px",
+    wrap: true,
   },
 ];
 
 const UsersTable = () => {
-  const { data, isLoading, isError } = useGetUsersQuery(undefined);
+  const { data, isLoading } = useGetUsersQuery(undefined);
   // console.log("users table data: ", data);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <div>

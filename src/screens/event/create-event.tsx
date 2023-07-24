@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 import MySwal from "components/MySwal";
 import { useCreateEventMutation } from "store/apis/event";
 
-interface ITeamInitialValues {
+interface IEventInitialValues {
   name: string;
   team_id: string;
   starting_date: string;
@@ -15,13 +15,13 @@ interface ITeamInitialValues {
 }
 
 const CreateEvent = () => {
-  const [addItem, { isLoading }] = useCreateEventMutation();
+  const [createEvent, { isLoading }] = useCreateEventMutation();
   const { data: teamsData, isLoading: teamsLoading } =
     useGetTeamsQuery(undefined);
 
   const navigate = useNavigate();
   const { getFieldProps, handleSubmit, errors, touched } =
-    useFormik<ITeamInitialValues>({
+    useFormik<IEventInitialValues>({
       initialValues: {
         name: "",
         team_id: "",
@@ -30,7 +30,7 @@ const CreateEvent = () => {
       },
       onSubmit: async (values: any) => {
         try {
-          await addItem({
+          await createEvent({
             name: values.name,
             team_id: values.team_id,
             starting_date: new Date(values.starting_date),
@@ -106,7 +106,7 @@ const CreateEvent = () => {
             />
           </div>
           <div className="mb-4 flex flex-col gap-4">
-            <Label htmlFor="ending_date">Event Start date</Label>
+            <Label htmlFor="ending_date">Event End date</Label>
             <TextInput
               id="ending_date"
               placeholder="Enter starting date"

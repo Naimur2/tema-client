@@ -20,7 +20,6 @@ export default function Loader({ isLoading, children }: ILoaderProps) {
           animationData={loaderAnimation}
           loop={true}
         />
-        ;
       </div>
     </>
   );
