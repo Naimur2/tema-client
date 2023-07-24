@@ -72,7 +72,7 @@ export default function ViewFolder() {
         fetchingUi={<FetchingUi />}
         errorUi={<ApiError />}
         ui={
-          <div className="gap-4">
+          <div className="space-y-4">
             <div className="flex justify-start gap-2">
               <CustomModal
                 title="Add Folder"
@@ -185,7 +185,7 @@ export default function ViewFolder() {
                 );
               })}
               {(data as IViewFolderORFileData)?.data?.files?.map((file) => {
-                console.log("file data: ",data)
+                console.log("file data: ", file);
                 return <p key={file?.name}>Folder</p>;
               })}
             </div>

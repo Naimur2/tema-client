@@ -49,7 +49,7 @@ export default function FolderList() {
   }, []);
 
   return (
-    <div className="gap-4">
+    <div className="space-y-4">
       <div className="flex justify-start gap-2">
         <CustomModal
           title="Add Folder"
