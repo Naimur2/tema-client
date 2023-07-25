@@ -7,11 +7,7 @@ interface IAFile {
 
 const File = (props: IAFile) => {
   const {
-    file = {
-      name: "",
-      type: "",
-      url: "",
-    },
+    file,
     handleFileDoubleClick = () => {},
   } = props;
   return (
@@ -22,9 +18,9 @@ const File = (props: IAFile) => {
       <img
         className="w-4"
         src="/Mac_Folder_Icon.png"
-        alt={`${file?.name} folder icon`}
+        alt={`${file?.fileName} folder icon`}
       />
-      <p className="text-white max-w-[50vw]">{file?.name}</p>
+      <p className="text-white max-w-[50vw]">{file?.fileName}</p>
     </div>
   );
 };

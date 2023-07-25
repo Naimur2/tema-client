@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import Loader from "components/Loader";
 import Layout from "layouts/navbar-sidebar";
+
 const LoginScreen = lazy(() => import("./screens/auth/sign-in"));
 
 const EventsList = lazy(() => import("./screens/event"));
@@ -16,6 +17,8 @@ const ViewFolder = lazy(() => import("./screens/folder/view-folder"));
 const CreateFolder = lazy(() => import("./screens/folder/create-folder"));
 const Dashboard = lazy(() => import("./screens/dashboard"));
 const UsersList = lazy(() => import("./screens/users"));
+const Notification = lazy(() => import("screens/notifications"));
+const Calender = lazy(() => import("screens/calender"));
 
 export default function AppRoutes() {
   return (
@@ -115,6 +118,22 @@ export default function AppRoutes() {
             element={
               <Suspense fallback={<Loader isLoading />}>
                 <CreateFolder />
+              </Suspense>
+            }
+          />
+          <Route
+            path="notification"
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <Notification />
+              </Suspense>
+            }
+          />
+          <Route
+            path="calender"
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <Calender />
               </Suspense>
             }
           />

@@ -41,11 +41,18 @@ export const folderApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["folders"],
     }),
-    updateFile: builder.mutation({
+    uploadFile: builder.mutation({
       query: ({ id, ...body }) => ({
         url: `/folders/files/${id}`,
-        method: "PUT",
+        method: "POST",
         body,
+      }),
+      invalidatesTags: ["folders"],
+    }),
+    deleteAFile: builder.mutation({
+      query: ({ folderId, fileId }) => ({
+        url: `/folders/files?fileId=${fileId}&folderId=${folderId}`,
+        method: "DELETE",
       }),
       invalidatesTags: ["folders"],
     }),
@@ -65,6 +72,7 @@ export const {
   useGetFolderByIdQuery,
   useUpdateFolderMutation,
   useDeleteFolderMutation,
-  useUpdateFileMutation,
+  useUploadFileMutation,
   useCreateNewFolderMutation,
+  useDeleteAFileMutation,
 } = folderApiSlice;

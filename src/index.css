@@ -190,19 +190,17 @@
     @apply h-full w-full;
   }
   .rdt_Table {
- 
   }
   .rdt_TableRow {
-
   }
   .rdt_TableCol {
-    @apply !py-10
+    @apply !py-10;
   }
 
   .rdt_TableCol_Sortable {
   }
   .rdt_TableCell {
-    @apply !py-10
+    @apply !py-10;
   }
   .rdt_TableHeader {
   }

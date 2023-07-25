@@ -1,19 +1,22 @@
-import { useCallback } from "react";
+import { useCallback, useState, useEffect, useMemo } from "react";
 import Loader from "components/Loader";
 import ApiError from "components/common/ApiError";
 import FetchingUi from "components/common/FetchingUi";
 import QueryDataHandler from "components/common/QueryDataHandler";
+import { BsCloudDownload } from "react-icons/bs";
+import { MdDelete, MdDownload } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useCreateFolderMutation,
   useCreateNewFolderMutation,
+  useDeleteAFileMutation,
   useGetFolderByIdQuery,
-  useUpdateFileMutation,
+  useUploadFileMutation,
   useUpdateFolderMutation,
 } from "store/apis/folder";
 import { IFile, IFolder, THandleDoubleClick } from "./index";
 import { AiFillFolderAdd, AiFillFileAdd } from "react-icons/ai";
-import { Button } from "flowbite-react";
+import { Button, Card } from "flowbite-react";
 import CustomModal from "components/common/CustomModal";
 import CreateFolder from "./create-folder";
 import CreateFolderForm, {
@@ -25,6 +28,11 @@ import CreateFileForm, {
   TCreateFileOnSubmit,
 } from "components/folder/CreateFileForm";
 import { useUploadImageMutation } from "store/apis/uploadImage";
+import {
+  convertToFile,
+  downloadFile,
+  getThumbnailAndFile,
+} from "utils/file-formatter";
 
 interface IFilesORFolders {
   _id: string;
@@ -38,7 +46,121 @@ interface IViewFolderORFileData {
   data: IFilesORFolders;
 }
 
+type TThumbnailAndFile =
+  | {
+      thumbnailUrl?: string;
+      fileName?: string;
+      originalFileUrl?: string;
+      id?: string | number;
+    }
+  | undefined;
+
+interface IViewFilesFolders {
+  data?: IViewFolderORFileData;
+  thumbnailAndFiles?: TThumbnailAndFile[];
+}
+
+const ViewFilesAndFolders = ({
+  data,
+  thumbnailAndFiles,
+}: IViewFilesFolders) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [deleteAFile] = useDeleteAFileMutation();
+
+  const handleFolderDoubleClick: THandleDoubleClick = useCallback((e, id) => {
+    if (e?.detail === 2) {
+      console.log("folder double clicked", e.detail);
+      navigate(`/dashboard/folders/${id}`);
+    }
+  }, []);
+
+  const handleFileDelete = ({
+    fileId,
+    folderId,
+  }: {
+    folderId: string | number;
+    fileId: string | number;
+  }) => {
+    deleteAFile({ folderId, fileId });
+  };
+
+  const isFolderAvailable = !!data?.data?.folders?.length;
+  const isFilesAvailable = !!thumbnailAndFiles?.length;
+  return (
+    <div>
+      <div>
+        <h5 className="font-bold tracking-tight text-gray-900 dark:text-white mb-2">
+          {isFolderAvailable ? "Available Folders" : "No Folder Found"}
+        </h5>
+        {isFolderAvailable && (
+          <div className="text-white flex flex-wrap gap-4">
+            {(data as IViewFolderORFileData)?.data?.folders?.map((folder) => {
+              return (
+                <Folder
+                  folder={folder}
+                  handleFolderDoubleClick={handleFolderDoubleClick}
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
+      <div>
+        <h5 className="font-bold tracking-tight text-gray-900 dark:text-white mb-2">
+          {isFilesAvailable ? "Available Files" : "No File Found"}
+        </h5>
+        {isFilesAvailable && (
+          <div className="text-white flex flex-wrap gap-4">
+            {thumbnailAndFiles?.map((thumbnailAndFile) => {
+              console.log("Files data obj: ", thumbnailAndFile);
+              return (
+                <>
+                  <Card
+                    // className="w-full"
+                    imgSrc={thumbnailAndFile?.thumbnailUrl ?? ""}
+                    imgAlt={thumbnailAndFile?.fileName}
+                  >
+                    <h5 className="font-normal tracking-tight text-gray-900 dark:text-white break-all">
+                      {thumbnailAndFile?.fileName}
+                    </h5>
+                    <div className="flex justify-between items-center gap-1">
+                      <button
+                        onClick={() =>
+                          downloadFile({
+                            filename: thumbnailAndFile?.fileName ?? "",
+                            fileUrl: thumbnailAndFile?.originalFileUrl ?? "",
+                          })
+                        }
+                      >
+                        <MdDownload className="w-4 h-4 text-green-500" />
+                      </button>
+                      <MdDelete
+                        onClick={() =>
+                          handleFileDelete({
+                            fileId: thumbnailAndFile?.id ?? "",
+                            folderId: id ?? "",
+                          })
+                        }
+                        className="w-4 h-4 text-red-500"
+                      />
+                    </div>
+                  </Card>
+                </>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export default function ViewFolder() {
+  const [thumbnailAndFiles, setThumbnailAndFiles] = useState<
+    TThumbnailAndFile[]
+  >([]);
+  
   const { id } = useParams();
   const navigate = useNavigate();
   const { data, ...restRes } = useGetFolderByIdQuery(id);
@@ -53,16 +175,42 @@ export default function ViewFolder() {
     }
   }, []);
 
-  const [updateFile] = useUpdateFileMutation();
+  const [uploadFile] = useUploadFileMutation();
   const [uploadImage] = useUploadImageMutation();
+  // const [deleteAFile] = useDeleteAFileMutation();
 
-  // const handleFolderAdd = useCallback(() => {
-  //   // createFolder()
-  // }, []);
+  const processedPromises = useMemo(() => {
+    const files = (data as IViewFolderORFileData)?.data?.files;
+    const tempConvertedFiles: TThumbnailAndFile[] = [];
+    const promises = files?.map((file) => getThumbnailAndFile(file));
 
-  // const handleFileAdd = useCallback(() => {
-  //   // updateFile()
-  // }, []);
+    if (promises) {
+      return Promise.all(promises).then((thumbnailAndFiles) => {
+        tempConvertedFiles.push(...thumbnailAndFiles);
+        return tempConvertedFiles;
+      });
+    } else {
+      return tempConvertedFiles;
+    }
+  }, [data]);
+
+  useEffect(() => {
+    (async () => {
+      const processedFilesArray = await processedPromises;
+      setThumbnailAndFiles(processedFilesArray);
+    })();
+  }, [processedPromises]);
+  console.log("ThumbnailAndFiles: ", thumbnailAndFiles);
+
+  // const handleFileDelete = ({
+  //   fileId,
+  //   folderId,
+  // }: {
+  //   folderId: string | number;
+  //   fileId: string | number;
+  // }) => {
+  //   deleteAFile({ folderId, fileId });
+  // };
 
   return (
     <div className="text-white">
@@ -142,18 +290,19 @@ export default function ViewFolder() {
 
                       const { data } = await uploadImage(formData).unwrap();
                       console.log("upload Image: ", data);
+
                       const submittedValue = {
                         id,
                         files: [
                           {
-                            name: data?.[0]?.fileName,
-                            type: data?.[0]?.fileType,
-                            url: data?.[0]?.fileUrl,
+                            fileName: data?.[0]?.fileName,
+                            fileType: data?.[0]?.fileType,
+                            fileUrl: data?.[0]?.fileUrl,
                           },
                         ],
                       };
 
-                      await updateFile(submittedValue).unwrap();
+                      await uploadFile(submittedValue).unwrap();
                       MySwal.fire({
                         title: "Success",
                         text: "File added successfully",
@@ -175,7 +324,7 @@ export default function ViewFolder() {
                 }}
               </CustomModal>
             </div>
-            <div className="text-white flex flex-wrap gap-4">
+            {/* <div className="text-white flex flex-wrap gap-4">
               {(data as IViewFolderORFileData)?.data?.folders?.map((folder) => {
                 return (
                   <Folder
@@ -184,11 +333,48 @@ export default function ViewFolder() {
                   />
                 );
               })}
-              {(data as IViewFolderORFileData)?.data?.files?.map((file) => {
-                console.log("file data: ", file);
-                return <p key={file?.name}>Folder</p>;
+              {thumbnailAndFiles?.map((thumbnailAndFile) => {
+                console.log("Files data obj: ", thumbnailAndFile);
+                return (
+                  <>
+                    <Card
+                      className="w-28"
+                      imgSrc={thumbnailAndFile?.thumbnailUrl ?? ""}
+                      imgAlt={thumbnailAndFile?.fileName}
+                    >
+                      <h5 className="font-normal tracking-tight text-gray-900 dark:text-white break-all">
+                        {thumbnailAndFile?.fileName}
+                      </h5>
+                      <div className="flex justify-between items-center gap-1">
+                        <button
+                          onClick={() =>
+                            downloadFile({
+                              filename: thumbnailAndFile?.fileName ?? "",
+                              fileUrl: thumbnailAndFile?.originalFileUrl ?? "",
+                            })
+                          }
+                        >
+                          <MdDownload className="w-4 h-4 text-green-500" />
+                        </button>
+                        <MdDelete
+                          onClick={() =>
+                            handleFileDelete({
+                              fileId: thumbnailAndFile?.id ?? "",
+                              folderId: id ?? "",
+                            })
+                          }
+                          className="w-4 h-4 text-red-500"
+                        />
+                      </div>
+                    </Card>
+                  </>
+                );
               })}
-            </div>
+            </div> */}
+            <ViewFilesAndFolders
+              data={data}
+              thumbnailAndFiles={thumbnailAndFiles}
+            />
           </div>
         }
       />

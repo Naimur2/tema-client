@@ -18,10 +18,19 @@ export type THandleDoubleClick = (
   e?: React.MouseEvent<HTMLDivElement, MouseEvent>,
   id?: string | number
 ) => void;
+// export interface IFile {
+//   name?: string;
+//   type?: string;
+//   url?: string;
+// }
+
 export interface IFile {
-  name?: string;
-  type?: string;
-  url?: string;
+  _id?: string;
+  fileName?: string;
+  fileUrl?: string;
+  fileType?: string;
+  folderId?: string;
+  __v?: number;
 }
 
 export interface IFolder {

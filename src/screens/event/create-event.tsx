@@ -6,35 +6,48 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router";
 import MySwal from "components/MySwal";
 import { useCreateEventMutation } from "store/apis/event";
+import { useUploadImageMutation } from "store/apis/uploadImage";
 
 interface IEventInitialValues {
   name: string;
   team_id: string;
   starting_date: string;
   ending_date: string;
+  location: string;
+  image: File | string;
 }
 
 const CreateEvent = () => {
   const [createEvent, { isLoading }] = useCreateEventMutation();
   const { data: teamsData, isLoading: teamsLoading } =
     useGetTeamsQuery(undefined);
-
+  const [uploadImage] = useUploadImageMutation();
   const navigate = useNavigate();
-  const { getFieldProps, handleSubmit, errors, touched } =
+  const { getFieldProps, setFieldValue, handleSubmit, errors, touched } =
     useFormik<IEventInitialValues>({
       initialValues: {
         name: "",
         team_id: "",
         starting_date: "",
         ending_date: "",
+        location: "",
+        image: "",
       },
-      onSubmit: async (values: any) => {
+      onSubmit: async (values) => {
         try {
+          const formData = new FormData();
+          formData.append("image", values.image);
+
+          const { data } = await uploadImage(formData).unwrap();
+          console.log("create event data: ", data);
+
           await createEvent({
             name: values.name,
             team_id: values.team_id,
             starting_date: new Date(values.starting_date),
             ending_date: new Date(values.ending_date),
+            location: values?.location,
+            image: data?.[0]?.fileUrl,
           }).unwrap();
           MySwal.fire({
             title: "Success",
@@ -55,6 +68,8 @@ const CreateEvent = () => {
         team_id: Yup.string().required("Required"),
         starting_date: Yup.string().required("Required"),
         ending_date: Yup.string().required("Required"),
+        location: Yup.string().required("Required"),
+        image: Yup.mixed().required("Required"),
       }),
     });
 
@@ -113,6 +128,33 @@ const CreateEvent = () => {
               helperText={touched.ending_date && errors.ending_date}
               {...getFieldProps("ending_date")}
               type="date"
+            />
+          </div>
+          <div className="mb-4 flex flex-col gap-4">
+            <Label htmlFor="image">Event image</Label>
+            <input
+              className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
+              id="file_input"
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={(event: any) => {
+                setFieldValue("image", event.currentTarget.files[0]);
+              }}
+              // value={formik?.values?.image?.name}
+            />
+            {touched.image && errors.image && (
+              <p className="text-red-500">{errors.image}</p>
+            )}
+          </div>
+          <div className="mb-4 flex flex-col gap-4">
+            <Label htmlFor="location">Location</Label>
+            <TextInput
+              id="location"
+              placeholder="Enter location"
+              helperText={touched.location && errors.location}
+              {...getFieldProps("location")}
+              type="text"
             />
           </div>
         </div>

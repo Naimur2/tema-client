@@ -12,6 +12,8 @@ import {
   HiShoppingBag,
   HiUsers,
   HiFolder,
+  HiBell,
+  HiCalendar,
 } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router";
 import { useLoginMutation, useLogoutMutation } from "store/apis/auth";
@@ -44,13 +46,23 @@ const routes = [
     title: "Folders",
     icon: HiFolder,
   },
+  {
+    path: "/dashboard/notification",
+    title: "Notification",
+    icon: HiBell,
+  },
+  {
+    path: "/dashboard/calender",
+    title: "Calender",
+    icon: HiCalendar,
+  },
 ];
 
 const ExampleSidebar: FC = function () {
   const [currentPage, setCurrentPage] = useState("");
   const pathName = useLocation().pathname;
   const navigate = useNavigate();
-  const [logOutFn,{isLoading}] = useLogoutMutation();
+  const [logOutFn, { isLoading }] = useLogoutMutation();
 
   useEffect(() => {
     const newPage = window.location.pathname;

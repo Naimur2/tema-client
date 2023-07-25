@@ -1,3 +1,4 @@
+import { ISingleEventData } from "screens/event/edit-event";
 import { apiSlice } from "..";
 
 export const eventApiSlice = apiSlice.injectEndpoints({
@@ -18,7 +19,7 @@ export const eventApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["events"],
     }),
-    getEventById: builder.query({
+    getEventById: builder.query<ISingleEventData, string | number | undefined>({
       query: (id) => ({
         url: `/events/${id}`,
         method: "GET",
