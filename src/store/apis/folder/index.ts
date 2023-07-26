@@ -1,9 +1,16 @@
-import { IFoldersData, IViewFolderORFileData } from "types/folder";
+import {
+  ICreateFolderArg,
+  ICreateFolderRes,
+  IFileDeleteArgs,
+  IFoldersData,
+  IViewFolderORFileData,
+  TViewFolderORFileDataArg,
+} from "types/folder";
 import { apiSlice } from "..";
 
 export const folderApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    createFolder: builder.mutation({
+    createFolder: builder.mutation<ICreateFolderRes, ICreateFolderArg>({
       query: (body) => ({
         url: "/folders",
         method: "POST",
@@ -29,7 +36,7 @@ export const folderApiSlice = apiSlice.injectEndpoints({
     }),
     getFolderById: builder.query<
       IViewFolderORFileData,
-      string | number | undefined
+      TViewFolderORFileDataArg
     >({
       query: (id) => ({
         url: `/folders/${id}`,
@@ -53,7 +60,7 @@ export const folderApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["folders"],
     }),
-    deleteAFile: builder.mutation({
+    deleteAFile: builder.mutation<any,IFileDeleteArgs>({
       query: ({ folderId, fileId }) => ({
         url: `/folders/files?fileId=${fileId}&folderId=${folderId}`,
         method: "DELETE",

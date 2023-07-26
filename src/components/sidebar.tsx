@@ -43,7 +43,7 @@ const routes = [
   },
   {
     path: "/dashboard/folders",
-    title: "Folders",
+    title: "Gallery",
     icon: HiFolder,
   },
   {

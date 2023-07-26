@@ -36,6 +36,8 @@ export interface IViewFolderORFileData {
   data: IFilesORFolders;
 }
 
+export type TViewFolderORFileDataArg = string | number | undefined;
+
 export type TThumbnailAndFile =
   | {
       thumbnailUrl?: string;
@@ -48,4 +50,21 @@ export type TThumbnailAndFile =
 export interface IViewFilesFolders {
   data?: IViewFolderORFileData;
   thumbnailAndFiles?: TThumbnailAndFile[];
+}
+
+export interface ICreateFolderArg {
+  name: string;
+}
+
+export interface ICreateFolderRes {
+  message?: string;
+  data?: IFolder & {
+    userId?: string;
+    parent_id?: string;
+  };
+}
+
+export interface IFileDeleteArgs {
+  folderId: string | number;
+  fileId: string | number;
 }

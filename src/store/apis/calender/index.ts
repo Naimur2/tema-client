@@ -8,7 +8,7 @@ export const calenderApiSlice = apiSlice.injectEndpoints({
       ICalenderDataArgs
     >({
       query: ({ month, year }) => ({
-        url: `/events?month=1&year=2023`,
+        url: `/events?month=${month}&year=${year}`,
         method: "GET",
       }),
     }),

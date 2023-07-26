@@ -117,16 +117,17 @@ const ViewFilesAndFolders = ({
         {isFilesAvailable && (
           <div className="text-white flex flex-wrap gap-4">
             {thumbnailAndFiles?.map((thumbnailAndFile) => {
-              console.log("Files data obj: ", thumbnailAndFile);
+              const fileName = thumbnailAndFile?.fileName?.substring(0, 15);
               return (
                 <>
                   <Card
                     // className="w-full"
                     imgSrc={thumbnailAndFile?.thumbnailUrl ?? ""}
                     imgAlt={thumbnailAndFile?.fileName}
+                    className="max-w-[250px]"
                   >
                     <h5 className="font-normal tracking-tight text-gray-900 dark:text-white break-all">
-                      {thumbnailAndFile?.fileName}
+                      {`${fileName ? fileName + "..." : ""}`}
                     </h5>
                     <div className="flex justify-between items-center gap-1">
                       <button

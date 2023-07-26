@@ -20,6 +20,7 @@ const BigCalender = ({ myEventsList }: IBigCalender) => {
         style={{ height: "80vh" }}
         defaultDate={new Date()}
         defaultView="month"
+        toolbar={false}
       />
     </div>
   );

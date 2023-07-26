@@ -67,7 +67,10 @@ export default function LoginScreen() {
           </div>
 
           <div className="mb-6">
-            <Button type="submit" className="w-full lg:w-auto">
+            <Button
+              type="submit"
+              className="w-full lg:w-auto bg-primary-900 hover:bg-primary-700"
+            >
               Login to your account
             </Button>
           </div>

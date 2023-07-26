@@ -27,7 +27,7 @@ const Folder = (props: IAFolder) => {
         src="/Mac_Folder_Icon.png"
         alt={`${folder?.name} folder icon`}
       />
-      <p className="text-white w-20 pb-1">{folder?.name}</p>
+      <p className="text-white w-20 pb-1 break-words">{folder?.name}</p>
     </div>
   );
 };
