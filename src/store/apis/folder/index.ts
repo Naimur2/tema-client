@@ -1,3 +1,4 @@
+import { IFoldersData, IViewFolderORFileData } from "types/folder";
 import { apiSlice } from "..";
 
 export const folderApiSlice = apiSlice.injectEndpoints({
@@ -19,14 +20,17 @@ export const folderApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["folders"],
     }),
-    getFolders: builder.query({
+    getFolders: builder.query<IFoldersData, void>({
       query: () => ({
         url: "/folders?noParent=true",
         method: "GET",
       }),
       providesTags: ["folders"],
     }),
-    getFolderById: builder.query({
+    getFolderById: builder.query<
+      IViewFolderORFileData,
+      string | number | undefined
+    >({
       query: (id) => ({
         url: `/folders/${id}`,
         method: "GET",

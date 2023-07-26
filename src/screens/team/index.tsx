@@ -3,25 +3,26 @@ import { useNavigate } from "react-router";
 import { useDeleteTeamMutation, useGetTeamsQuery } from "store/apis/team";
 import DataTable, { TableColumn } from "react-data-table-component";
 import MySwal from "components/MySwal";
+import { ITeam, ITeamAction } from "types/team";
 
 //
-interface ITeam {
-  _id?: string;
-  name?: string;
-  color?: string;
-  score?: number;
-  __v?: number;
-  image?: string;
-}
+// interface ITeam {
+//   _id?: string;
+//   name?: string;
+//   color?: string;
+//   score?: number;
+//   __v?: number;
+//   image?: string;
+// }
 
-interface ITeamAction {
-  row?: ITeam;
-}
+// interface ITeamAction {
+//   row?: ITeam;
+// }
 
-interface ITeamData {
-  message?: string;
-  data?: ITeam[];
-}
+// interface ITeamData {
+//   message?: string;
+//   data?: ITeam[];
+// }
 
 const Actions = ({ row }: ITeamAction) => {
   const navigate = useNavigate();
@@ -103,7 +104,7 @@ const columns: TableColumn<ITeam>[] = [
 ];
 
 export default function Data() {
-  const { data, isLoading, isError } = useGetTeamsQuery(undefined);
+  const { data, isLoading, isError } = useGetTeamsQuery();
   console.log("team table data: ", data);
   const navigate = useNavigate();
 
@@ -120,7 +121,7 @@ export default function Data() {
       <div className="mt-4">
         <DataTable
           columns={columns}
-          data={(data as ITeamData)?.data || []}
+          data={data?.data || []}
           progressPending={isLoading}
           progressComponent={
             <div className="flex justify-center">

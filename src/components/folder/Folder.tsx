@@ -1,4 +1,5 @@
-import { IFolder, THandleDoubleClick } from "screens/folder";
+import { IFolder, THandleDoubleClick } from "types/folder";
+
 
 interface IAFolder {
   handleFolderDoubleClick?: THandleDoubleClick;

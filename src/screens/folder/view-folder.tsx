@@ -14,7 +14,6 @@ import {
   useUploadFileMutation,
   useUpdateFolderMutation,
 } from "store/apis/folder";
-import { IFile, IFolder, THandleDoubleClick } from "./index";
 import { AiFillFolderAdd, AiFillFileAdd } from "react-icons/ai";
 import { Button, Card } from "flowbite-react";
 import CustomModal from "components/common/CustomModal";
@@ -33,32 +32,37 @@ import {
   downloadFile,
   getThumbnailAndFile,
 } from "utils/file-formatter";
+import {
+  IViewFilesFolders,
+  THandleDoubleClick,
+  TThumbnailAndFile,
+} from "types/folder";
 
-interface IFilesORFolders {
-  _id: string;
-  name: string;
-  files: IFile[];
-  folders: IFolder[];
-}
+// interface IFilesORFolders {
+//   _id: string;
+//   name: string;
+//   files: IFile[];
+//   folders: IFolder[];
+// }
 
-interface IViewFolderORFileData {
-  message: string;
-  data: IFilesORFolders;
-}
+// interface IViewFolderORFileData {
+//   message: string;
+//   data: IFilesORFolders;
+// }
 
-type TThumbnailAndFile =
-  | {
-      thumbnailUrl?: string;
-      fileName?: string;
-      originalFileUrl?: string;
-      id?: string | number;
-    }
-  | undefined;
+// type TThumbnailAndFile =
+//   | {
+//       thumbnailUrl?: string;
+//       fileName?: string;
+//       originalFileUrl?: string;
+//       id?: string | number;
+//     }
+//   | undefined;
 
-interface IViewFilesFolders {
-  data?: IViewFolderORFileData;
-  thumbnailAndFiles?: TThumbnailAndFile[];
-}
+// interface IViewFilesFolders {
+//   data?: IViewFolderORFileData;
+//   thumbnailAndFiles?: TThumbnailAndFile[];
+// }
 
 const ViewFilesAndFolders = ({
   data,
@@ -95,7 +99,7 @@ const ViewFilesAndFolders = ({
         </h5>
         {isFolderAvailable && (
           <div className="text-white flex flex-wrap gap-4">
-            {(data as IViewFolderORFileData)?.data?.folders?.map((folder) => {
+            {data?.data?.folders?.map((folder) => {
               return (
                 <Folder
                   folder={folder}
@@ -160,7 +164,7 @@ export default function ViewFolder() {
   const [thumbnailAndFiles, setThumbnailAndFiles] = useState<
     TThumbnailAndFile[]
   >([]);
-  
+
   const { id } = useParams();
   const navigate = useNavigate();
   const { data, ...restRes } = useGetFolderByIdQuery(id);
@@ -180,7 +184,7 @@ export default function ViewFolder() {
   // const [deleteAFile] = useDeleteAFileMutation();
 
   const processedPromises = useMemo(() => {
-    const files = (data as IViewFolderORFileData)?.data?.files;
+    const files = data?.data?.files;
     const tempConvertedFiles: TThumbnailAndFile[] = [];
     const promises = files?.map((file) => getThumbnailAndFile(file));
 

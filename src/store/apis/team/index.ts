@@ -1,8 +1,19 @@
+import {
+  ICreateTeamRes,
+  TDeleteTeamArg,
+  IDeleteTeamResponse,
+  ITeamData,
+  ITeamsData,
+  IUpdateTeamArgs,
+  IUpdateTeamRes,
+  TCreateTeamArgs,
+  TTeamDataArg,
+} from "types/team";
 import { apiSlice } from "..";
 
 export const teamApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    createTeam: builder.mutation({
+    createTeam: builder.mutation<ICreateTeamRes, TCreateTeamArgs>({
       query: (body) => ({
         url: "/teams",
         method: "POST",
@@ -10,21 +21,21 @@ export const teamApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["teams"],
     }),
-    getTeams: builder.query({
+    getTeams: builder.query<ITeamsData, void>({
       query: () => ({
         url: "/teams",
         method: "GET",
       }),
       providesTags: ["teams"],
     }),
-    getTeamById: builder.query({
+    getTeamById: builder.query<ITeamData, TTeamDataArg>({
       query: (id) => ({
         url: `/teams/${id}`,
         method: "GET",
       }),
       providesTags: ["teams"],
     }),
-    updateTeam: builder.mutation({
+    updateTeam: builder.mutation<IUpdateTeamRes, IUpdateTeamArgs>({
       query: ({ id, ...body }) => ({
         url: `/teams/${id}`,
         method: "PUT",
@@ -32,7 +43,7 @@ export const teamApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["teams"],
     }),
-    deleteTeam: builder.mutation({
+    deleteTeam: builder.mutation<IDeleteTeamResponse, TDeleteTeamArg>({
       query: (id) => ({
         url: `/teams/${id}`,
         method: "DELETE",

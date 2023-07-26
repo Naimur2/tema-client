@@ -6,11 +6,7 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router";
 import MySwal from "components/MySwal";
 import { useCreateNotificationMutation } from "store/apis/notification";
-
-interface INotificationInitialValues {
-  title: string;
-  message: string;
-}
+import { INotificationInitialValues } from "types/notification";
 
 export default function Notification() {
   const [createNotification, { isLoading }] = useCreateNotificationMutation();

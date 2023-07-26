@@ -1,6 +1,6 @@
 import { Label } from "flowbite-react";
 import { FaCheck, FaTimes } from "react-icons/fa";
-import { IUser } from "screens/users";
+import { IUser } from "types/user";
 import { formatShortSocialDateTime } from "utils/date-formatter";
 
 interface IViewAUserRow {

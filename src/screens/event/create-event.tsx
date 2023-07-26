@@ -7,15 +7,16 @@ import { useNavigate } from "react-router";
 import MySwal from "components/MySwal";
 import { useCreateEventMutation } from "store/apis/event";
 import { useUploadImageMutation } from "store/apis/uploadImage";
+import { IEventInitialValues } from "types/event";
 
-interface IEventInitialValues {
-  name: string;
-  team_id: string;
-  starting_date: string;
-  ending_date: string;
-  location: string;
-  image: File | string;
-}
+// interface IEventInitialValues {
+//   name: string;
+//   team_id: string;
+//   starting_date: string;
+//   ending_date: string;
+//   location: string;
+//   image: File | string;
+// }
 
 const CreateEvent = () => {
   const [createEvent, { isLoading }] = useCreateEventMutation();

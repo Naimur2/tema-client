@@ -3,6 +3,8 @@ import { login, logout, updateToken } from "store/features/auth";
 
 import { apiSlice } from "../index";
 import { redirect } from "react-router";
+import { IDashBoardData } from "types/dashboard";
+import { IUsersData } from "types/user";
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -78,14 +80,14 @@ export const authApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["stats", "users"],
     }),
     // work here
-    getUsers: builder.query({
+    getUsers: builder.query<IUsersData, void>({
       query: () => ({
         url: "/auth/users",
         method: "GET",
       }),
       providesTags: ["users"],
     }),
-    getStat: builder.query({
+    getStat: builder.query<IDashBoardData, void>({
       query: () => ({
         url: "/auth/stat",
         method: "GET",

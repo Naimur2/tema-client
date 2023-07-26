@@ -1,4 +1,5 @@
-import { IFile, THandleDoubleClick } from "screens/folder";
+import { IFile, THandleDoubleClick } from "types/folder";
+
 
 interface IAFile {
   handleFileDoubleClick?: THandleDoubleClick;

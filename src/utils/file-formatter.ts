@@ -5,7 +5,8 @@
 //   _id?: string;
 // }
 
-import { IFile } from "screens/folder";
+import { IFile } from "types/folder";
+
 
 const fetchRemoteFileAsBlob = async (fileUrl: string): Promise<Blob | null> => {
   try {

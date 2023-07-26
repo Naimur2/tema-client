@@ -14,38 +14,39 @@ import {
 import { useEffect } from "react";
 import dayjs from "dayjs";
 import { useUploadImageMutation } from "store/apis/uploadImage";
+import { IEventInitialValues } from "types/event";
 
-interface TeamId {
-  _id?: string;
-  name?: string;
-  color?: string;
-  score?: number;
-  __v?: number;
-}
-interface IEvent {
-  _id?: string;
-  name?: string;
-  team_id?: TeamId;
-  starting_date?: string;
-  ending_date?: string;
-  location: string;
-  image: File | string;
-  __v?: number;
-}
+// interface TeamId {
+//   _id?: string;
+//   name?: string;
+//   color?: string;
+//   score?: number;
+//   __v?: number;
+// }
+// interface IEvent {
+//   _id?: string;
+//   name?: string;
+//   team_id?: TeamId;
+//   starting_date?: string;
+//   ending_date?: string;
+//   location: string;
+//   image: File | string;
+//   __v?: number;
+// }
 
-export interface ISingleEventData {
-  message?: string;
-  data?: IEvent;
-}
+// export interface ISingleEventData {
+//   message?: string;
+//   data?: IEvent;
+// }
 
-interface IEventInitialValues {
-  name: string;
-  team_id: string;
-  starting_date: string;
-  ending_date: string;
-  location: string;
-  image: File | string;
-}
+// interface IEventInitialValues {
+//   name: string;
+//   team_id: string;
+//   starting_date: string;
+//   ending_date: string;
+//   location: string;
+//   image: File | string;
+// }
 
 const EditEvent = () => {
   const { id } = useParams();
@@ -113,9 +114,9 @@ const EditEvent = () => {
     }),
   });
 
-  const teamArray = teamsData?.data?.map((team: any) => ({
-    label: team.name,
-    value: team._id,
+  const teamArray = teamsData?.data?.map((team) => ({
+    label: team?.name ?? "",
+    value: team?._id ?? "",
   }));
 
   console.log("edit event form values: ", values);

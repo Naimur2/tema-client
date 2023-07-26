@@ -7,13 +7,14 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router";
 import MySwal from "components/MySwal";
 import { useUploadImageMutation } from "store/apis/uploadImage";
+import { ITeamInitialValues } from "types/team";
 
-interface ITeamInitialValues {
-  name: string;
-  color: string;
-  score: number;
-  image: undefined | File | string;
-}
+// interface ITeamInitialValues {
+//   name: string;
+//   color: string;
+//   score: number;
+//   image: undefined | File | string;
+// }
 
 export default function CreateItem() {
   const [addTeam, { isLoading }] = useCreateTeamMutation();
@@ -35,14 +36,14 @@ export default function CreateItem() {
 
           const { data } = await uploadImage(formData).unwrap();
 
-          const submitedValue = {
+          const submittedValue = {
             name: values.name,
             color: values.color,
             score: values.score,
             image: data?.[0].fileUrl,
           };
 
-          await addTeam(submitedValue).unwrap();
+          await addTeam(submittedValue).unwrap();
           MySwal.fire({
             title: "Success",
             text: "Team created successfully",

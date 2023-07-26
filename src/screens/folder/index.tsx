@@ -13,40 +13,17 @@ import CreateFolderForm, {
   TCreateFolderOnSubmit,
 } from "components/folder/CreateFolderForm";
 import MySwal from "components/MySwal";
+import { THandleDoubleClick } from "types/folder";
 
-export type THandleDoubleClick = (
-  e?: React.MouseEvent<HTMLDivElement, MouseEvent>,
-  id?: string | number
-) => void;
+
 // export interface IFile {
 //   name?: string;
 //   type?: string;
 //   url?: string;
 // }
 
-export interface IFile {
-  _id?: string;
-  fileName?: string;
-  fileUrl?: string;
-  fileType?: string;
-  folderId?: string;
-  __v?: number;
-}
-
-export interface IFolder {
-  _id?: string;
-  name?: string;
-  files?: IFile[];
-  __v?: number;
-}
-
-interface IFoldersData {
-  message?: string;
-  data?: IFolder[];
-}
-
 export default function FolderList() {
-  const { data, ...restRes } = useGetFoldersQuery(null);
+  const { data, ...restRes } = useGetFoldersQuery();
   const [createFolder] = useCreateFolderMutation();
   const navigate = useNavigate();
 
@@ -107,7 +84,7 @@ export default function FolderList() {
         {...restRes}
         ui={
           <div className="flex flex-wrap gap-4">
-            {(data as IFoldersData)?.data?.map((folder) => {
+            {data?.data?.map((folder) => {
               return (
                 <Folder
                   folder={folder}

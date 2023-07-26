@@ -7,27 +7,7 @@ import { formatShortSocialDateTime } from "utils/date-formatter";
 import CustomModal from "components/common/CustomModal";
 import { AiFillEye } from "react-icons/ai";
 import ViewAUserRow from "components/ViewAUserRow";
-
-export interface IUser {
-  _id?: string;
-  first_name?: string;
-  last_name?: string;
-  username?: string;
-  email?: string;
-  mobile_number?: string;
-  shirt_size?: string;
-  arrival_date?: string;
-  departure_date?: string;
-  bed_preference?: string;
-  role?: string;
-  is_active?: boolean;
-  __v?: number;
-}
-
-interface IUserData {
-  message?: string;
-  data?: IUser[];
-}
+import { IUser } from "types/user";
 
 const columns: TableColumn<IUser>[] = [
   {
@@ -129,7 +109,7 @@ const UsersTable = () => {
       <div className="mt-4">
         <DataTable
           columns={columns}
-          data={(data as IUserData)?.data || []}
+          data={data?.data || []}
           progressPending={isLoading}
           progressComponent={
             <div className="flex justify-center">

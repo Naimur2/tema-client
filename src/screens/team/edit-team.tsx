@@ -12,13 +12,14 @@ import { useNavigate } from "react-router";
 import MySwal from "components/MySwal";
 import { useUploadImageMutation } from "store/apis/uploadImage";
 import { useParams } from "react-router-dom";
+import { ITeamInitialValues } from "types/team";
 
-interface IEditTeamInitialValue {
-  name: "";
-  color: "";
-  score: 0;
-  image: undefined;
-}
+// interface IEditTeamInitialValue {
+//   name: "";
+//   color: "";
+//   score: 0;
+//   image: undefined;
+// }
 
 export default function CreateTeam() {
   const [addItem, { isLoading }] = useUpdateTeamMutation();
@@ -31,7 +32,7 @@ export default function CreateTeam() {
 
   const navigate = useNavigate();
   const { getFieldProps, handleSubmit, setFieldValue, errors, touched } =
-    useFormik<IEditTeamInitialValue>({
+    useFormik<ITeamInitialValues>({
       initialValues: {
         name: "",
         color: "",

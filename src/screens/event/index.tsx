@@ -5,24 +5,25 @@ import DataTable, { TableColumn } from "react-data-table-component";
 import MySwal from "components/MySwal";
 import { useDeleteEventMutation, useGetEventsQuery } from "store/apis/event";
 import { formatShortSocialDateTime } from "utils/date-formatter";
+import { IEvent, IEventAction } from "types/event";
 
-interface IEvent {
-  _id?: string;
-  name?: string;
-  team_id?: string;
-  starting_date?: string;
-  ending_date?: string;
-  __v?: number;
-}
+// interface IEvent {
+//   _id?: string;
+//   name?: string;
+//   team_id?: string;
+//   starting_date?: string;
+//   ending_date?: string;
+//   __v?: number;
+// }
 
-interface IEventAction {
-  row?: IEvent;
-}
+// interface IEventAction {
+//   row?: IEvent;
+// }
 
-interface ITeamData {
-  message?: string;
-  data?: IEvent[];
-}
+// interface ITeamData {
+//   message?: string;
+//   data?: IEvent[];
+// }
 
 const Actions = ({ row }: IEventAction) => {
   const navigate = useNavigate();
@@ -93,8 +94,7 @@ const columns: TableColumn<IEvent>[] = [
 ];
 
 export default function Data() {
-  const { data, isLoading, isError } = useGetEventsQuery(undefined);
-  console.log("event table data: ", data);
+  const { data, isLoading, isError } = useGetEventsQuery();
   const navigate = useNavigate();
 
   return (
@@ -110,7 +110,7 @@ export default function Data() {
       <div className="mt-4">
         <DataTable
           columns={columns}
-          data={(data as ITeamData)?.data || []}
+          data={data?.data ?? []}
           progressPending={isLoading}
           progressComponent={
             <div className="flex justify-center">
