@@ -1,6 +1,4 @@
 {
-    "cSpell.words": [
-        "Formik",
-        "Swal"
-    ]
+    "cSpell.words": ["Formik", "Swal"],
+    "css.validate": false
 }
