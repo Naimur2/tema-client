@@ -119,20 +119,18 @@ const EditEvent = () => {
         value: team?._id ?? "",
     }));
 
-    console.log("edit event form values: ", values);
-
     useEffect(() => {
         console.log("get single event data: ", data);
         if (data) {
             setFieldValue("name", data?.data?.name);
-            setFieldValue("team_id", data?.data?.team_id);
+            setFieldValue("team_id", data?.data?.team_id?._id);
             setFieldValue(
                 "starting_date",
-                dayjs(data?.data?.starting_date).format("YYYY-MM-DD")
+                dayjs(data?.data?.starting_date).toISOString()
             );
             setFieldValue(
                 "ending_date",
-                dayjs(data?.data?.ending_date).format("YYYY-MM-DD")
+                dayjs(data?.data?.ending_date).toISOString()
             );
 
             // convert image url to file
