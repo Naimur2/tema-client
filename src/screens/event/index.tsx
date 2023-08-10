@@ -71,7 +71,8 @@ const columns: TableColumn<IEvent>[] = [
   },
   {
     name: "Team ID",
-    selector: (row) => row?.team_id || 0,
+    // @ts-ignore
+    selector: (row) => row?.team_id?.name || 0,
     wrap: true,
   },
   {
@@ -96,6 +97,8 @@ const columns: TableColumn<IEvent>[] = [
 export default function Data() {
   const { data, isLoading, isError } = useGetEventsQuery();
   const navigate = useNavigate();
+
+
 
   return (
     <div>
