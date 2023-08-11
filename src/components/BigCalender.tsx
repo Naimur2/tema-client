@@ -15,6 +15,8 @@ const BigCalender = ({ myEventsList }: IBigCalender) => {
             <Calendar
                 localizer={localizer}
                 events={myEventsList}
+                enableAutoScroll={true}
+                showAllEvents={true}
                 startAccessor="start"
                 endAccessor="end"
                 style={{ height: "80vh" }}
