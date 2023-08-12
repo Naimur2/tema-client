@@ -108,11 +108,11 @@ const ExampleSidebar: FC = function () {
                 <Sidebar.Item
                   icon={route.icon}
                   key={route.path}
-                  className={
+                  className={`${
                     pathName === currentPage
                       ? "bg-gray-100 dark:bg-gray-700"
                       : "" + "cursor-pointer"
-                  }
+                  } ${pathName?.includes(route.path) && "dark:bg-gray-700"}`}
                   onClick={() => navigate(route.path)}
                 >
                   {route.title}

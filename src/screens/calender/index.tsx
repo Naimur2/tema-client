@@ -70,8 +70,8 @@ const Calender = () => {
         eventsByDateRes?.data?.map(
           ({ starting_date, ending_date, name }): EventInput => ({
             title: name,
-            start: starting_date,
-            end: ending_date,
+            start: dayjs(starting_date).format("YYYY-MM-DD"),
+            end: dayjs(ending_date).format("YYYY-MM-DD"),
           })
         ) ?? []
       );
