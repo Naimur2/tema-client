@@ -41,6 +41,11 @@ const routes = [
     title: "Events",
     icon: HiCollection,
   },
+  // {
+  //   path: "/dashboard/assign-event",
+  //   title: "Assign Event",
+  //   icon: HiCollection,
+  // },
   {
     path: "/dashboard/folders",
     title: "Gallery",

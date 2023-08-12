@@ -3,8 +3,18 @@ import { login, logout, updateToken } from "store/features/auth";
 
 import { apiSlice } from "../index";
 import { redirect } from "react-router";
-import { IDashBoardData } from "types/dashboard";
-import { IUsersData } from "types/user";
+import {
+  IDashBoardData,
+  IAssignTeamArgs,
+  IAssignTeamRes,
+} from "types/dashboard";
+import {
+  IDeleteAUserArgs,
+  IDeleteAUserRes,
+  IGetAUserArgs,
+  IGetAUserRes,
+  IUsersData,
+} from "types/user";
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -14,6 +24,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
+
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data: result } = (await queryFulfilled) as any;
@@ -46,6 +57,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+
     logout: builder.mutation({
       query: () => ({
         url: "/auth/logout",
@@ -79,6 +91,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       },
       invalidatesTags: ["stats", "users"],
     }),
+
     // work here
     getUsers: builder.query<IUsersData, void>({
       query: () => ({
@@ -87,12 +100,38 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["users"],
     }),
+
+    getAUser: builder.query<IGetAUserRes, IGetAUserArgs>({
+      query: (id) => ({
+        url: `/auth/users/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["user", "teams"],
+    }),
+
+    deleteAUser: builder.mutation<IDeleteAUserRes, IDeleteAUserArgs>({
+      query: (id) => ({
+        url: `/auth/delete-user/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["users"],
+    }),
+
     getStat: builder.query<IDashBoardData, void>({
       query: () => ({
         url: "/auth/stat",
         method: "GET",
       }),
       providesTags: ["stats"],
+    }),
+
+    assignTeam: builder.mutation<IAssignTeamRes, IAssignTeamArgs>({
+      query: ({ id, data }) => ({
+        url: `/auth/assign-team/${id}`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["users", "user", "teams"],
     }),
   }),
 });
@@ -102,4 +141,7 @@ export const {
   useLogoutMutation,
   useGetUsersQuery,
   useGetStatQuery,
+  useDeleteAUserMutation,
+  useGetAUserQuery,
+  useAssignTeamMutation,
 } = authApiSlice;

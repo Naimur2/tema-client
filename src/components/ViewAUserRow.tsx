@@ -67,10 +67,10 @@ const ViewAUserRow = ({ row }: IViewAUserRow) => {
             {row?.bed_preference || ""}
           </p>
         </div>
-        <div>
+        {/* <div>
           <Label>Role</Label>
           <p className="text-gray-600 dark:text-gray-400">{row?.role || ""}</p>
-        </div>
+        </div> */}
         <div>
           <Label>Active</Label>
           <p className="text-gray-600 dark:text-gray-400">

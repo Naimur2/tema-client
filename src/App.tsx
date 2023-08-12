@@ -19,6 +19,7 @@ const Dashboard = lazy(() => import("./screens/dashboard"));
 const UsersList = lazy(() => import("./screens/users"));
 const Notification = lazy(() => import("screens/notifications"));
 const Calender = lazy(() => import("screens/calender"));
+const AssignTeam = lazy(() => import("screens/users/assign-team"));
 
 export default function AppRoutes() {
   return (
@@ -54,6 +55,14 @@ export default function AppRoutes() {
             element={
               <Suspense fallback={<Loader isLoading />}>
                 <EventsList />
+              </Suspense>
+            }
+          />
+          <Route
+            path="assign-team/:id"
+            element={
+              <Suspense fallback={<Loader isLoading />}>
+                <AssignTeam />
               </Suspense>
             }
           />

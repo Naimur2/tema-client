@@ -1,13 +1,59 @@
 import { Button } from "flowbite-react";
 import { useNavigate } from "react-router";
 import DataTable, { TableColumn } from "react-data-table-component";
-import { useGetUsersQuery } from "store/apis/auth";
-import { FaCheck, FaTimes } from "react-icons/fa";
+import { useDeleteAUserMutation, useGetUsersQuery } from "store/apis/auth";
+import { FaCheck, FaPencilAlt, FaTimes } from "react-icons/fa";
 import { formatShortSocialDateTime } from "utils/date-formatter";
 import CustomModal from "components/common/CustomModal";
-import { AiFillEye } from "react-icons/ai";
+import { AiFillEye, AiTwotoneDelete } from "react-icons/ai";
 import ViewAUserRow from "components/ViewAUserRow";
 import { IUser } from "types/user";
+import MySwal from "components/MySwal";
+
+const Actions = ({ row }: { row: IUser }) => {
+  const [deleteAUser] = useDeleteAUserMutation();
+  const navigate = useNavigate();
+  const handleDelete = async () => {
+    MySwal.fire({
+      title: "Are you sure?",
+      text: "You will not be able to recover this team!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, keep it",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteAUser(row?._id ?? "").unwrap();
+        MySwal.fire("Deleted!", "User has been deleted.", "success");
+      } else if (result.dismiss === MySwal.DismissReason.cancel) {
+        MySwal.fire("Cancelled", "User is safe :)", "error");
+      }
+    });
+  };
+
+  return (
+    <div className="flex gap-1 items-center">
+      <CustomModal
+        title={`Detailed Row View For User: ${row?.username ?? "N/A"}`}
+        trigger={
+          <AiFillEye className="w-5 h-5 fill-white cursor-pointer mr-1" />
+        }
+      >
+        <ViewAUserRow row={row} />
+      </CustomModal>
+      <FaPencilAlt
+        onClick={() => {
+          navigate(`/dashboard/assign-team/${row?._id}`);
+        }}
+        className="w-5 h-5 fill-white cursor-pointer mr-1"
+      />
+      <AiTwotoneDelete
+        onClick={handleDelete}
+        className="w-5 h-5 fill-white cursor-pointer mr-1"
+      />
+    </div>
+  );
+};
 
 const columns: TableColumn<IUser>[] = [
   {
@@ -74,18 +120,7 @@ const columns: TableColumn<IUser>[] = [
   // },
   {
     name: "View More",
-    cell: (row) => {
-      return (
-        <CustomModal
-          title={`Detailed Row View For User: ${row?.username ?? "N/A"}`}
-          trigger={
-            <AiFillEye className="w-5 h-5 fill-white cursor-pointer mr-1" />
-          }
-        >
-          <ViewAUserRow row={row} />
-        </CustomModal>
-      );
-    },
+    cell: (row) => <Actions row={row} />,
     width: "110px",
     wrap: true,
   },
