@@ -18,11 +18,11 @@ export default function Notification() {
         title: "",
         message: "",
       },
-      onSubmit: async (values: any) => {
+      onSubmit: async (values) => {
         try {
           const submittedValue = {
-            title: values.name,
-            message: values.color,
+            title: values.title,
+            body: values.message,
           };
 
           await createNotification(submittedValue).unwrap();
