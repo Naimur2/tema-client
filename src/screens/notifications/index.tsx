@@ -66,8 +66,8 @@ export default function Notification() {
           <TextInput
             id="message"
             placeholder="Enter message"
-            helperText={touched.message && errors.message}
-            {...getFieldProps("message")}
+            helperText={touched.body && errors.body}
+            {...getFieldProps("body")}
           />
         </div>
 
