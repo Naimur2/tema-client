@@ -21,11 +21,21 @@ const ViewAUserRow = ({ row }: IViewAUserRow) => {
         Detaile
       </Label> */}
       <div className="grid gap-5 xl:grid-cols-3">
-        <div>
+        {/* <div>
           <Label>Name</Label>
           <p className="text-gray-600 dark:text-gray-400">
             {`${row?.first_name || ""} ${row?.last_name || ""}`}
           </p>
+        </div> */}
+        <div className="flex gap-2 items-center text-gray-600 dark:text-gray-400">
+          <img
+            className="w-10 h-10 rounded-full"
+            src={row?.image_path}
+            alt={row?.first_name}
+          />
+          <h5 className="">
+            {row?.first_name || ""} {row?.last_name || ""}
+          </h5>
         </div>
         <div>
           <Label>User Name</Label>

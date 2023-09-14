@@ -1,10 +1,10 @@
 export interface ITeamId {
-  _id: string
-  name: string
-  color: string
-  score: number
-  image: string
-  __v: number
+  _id: string;
+  name: string;
+  color: string;
+  score: number;
+  image: string;
+  __v: number;
 }
 export interface IUser {
   _id?: string;
@@ -20,6 +20,7 @@ export interface IUser {
   role?: string;
   is_active?: boolean;
   team_id?: Partial<ITeamId>;
+  image_path?: string;
   __v?: number;
 }
 
@@ -35,7 +36,6 @@ export interface IDeleteAUserRes {
   message?: string;
 }
 /* delete a user end */
-
 
 /* get a user start */
 export type IGetAUserArgs = string;

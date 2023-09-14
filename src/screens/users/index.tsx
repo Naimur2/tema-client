@@ -58,7 +58,21 @@ const Actions = ({ row }: { row: IUser }) => {
 const columns: TableColumn<IUser>[] = [
   {
     name: "Name",
-    selector: (row) => `${row?.first_name || ""} ${row?.last_name || ""}`,
+    // selector: (row) => `${row?.first_name || ""} ${row?.last_name || ""}`,
+    cell(row, rowIndex, column, id) {
+      return (
+        <div className="flex gap-4 items-center">
+          <img
+            className="w-10 h-10 rounded-full"
+            src={row?.image_path}
+            alt={row?.first_name}
+          />
+          <h5 className="">
+            {row?.first_name || ""} {row?.last_name || ""}
+          </h5>
+        </div>
+      );
+    },
     minWidth: "150px",
     wrap: true,
   },
