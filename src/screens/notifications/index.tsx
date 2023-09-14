@@ -16,16 +16,16 @@ export default function Notification() {
     useFormik<INotificationInitialValues>({
       initialValues: {
         title: "",
-        message: "",
+        body: "",
       },
       onSubmit: async (values) => {
         try {
-          const submittedValue = {
-            title: values.title,
-            body: values.message,
-          };
+          // const submittedValue = {
+          //   title: values.title,
+          //   body: values.message,
+          // };
 
-          await createNotification(submittedValue).unwrap();
+          await createNotification(values).unwrap();
           MySwal.fire({
             title: "Success",
             text: "Notification created successfully",
@@ -42,7 +42,7 @@ export default function Notification() {
       },
       validationSchema: Yup.object({
         title: Yup.string().required("Required"),
-        message: Yup.string().required("Required"),
+        body: Yup.string().required("Required"),
       }),
     });
 

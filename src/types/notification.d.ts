@@ -1,6 +1,6 @@
 export interface INotificationInitialValues {
   title: string;
-  message: string;
+  body: string;
 }
 
 export type TCreateNotificationArgs = INotificationInitialValues;
