@@ -1,5 +1,6 @@
 import { Label } from "flowbite-react";
 import { FaCheck, FaTimes } from "react-icons/fa";
+import ReactImageFallback from "react-image-fallback";
 import { IUser } from "types/user";
 import { formatShortSocialDateTime } from "utils/date-formatter";
 
@@ -28,10 +29,12 @@ const ViewAUserRow = ({ row }: IViewAUserRow) => {
           </p>
         </div> */}
         <div className="flex gap-2 items-center text-gray-600 dark:text-gray-400">
-          <img
+          <ReactImageFallback
             className="w-10 h-10 rounded-full"
             src={row?.image_path}
             alt={row?.first_name}
+            fallbackImage={"/dummy-profile.jpg"}
+            initialImage={"/dummy-profile.jpg"}
           />
           <h5 className="">
             {row?.first_name || ""} {row?.last_name || ""}
@@ -79,7 +82,9 @@ const ViewAUserRow = ({ row }: IViewAUserRow) => {
         </div>
         <div>
           <Label>Dietary Restrictions</Label>
-          <p className="text-gray-600 dark:text-gray-400">{row?.alargeDesc || "N/A"}</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            {row?.alargeDesc || "N/A"}
+          </p>
         </div>
         <div>
           <Label>Active</Label>

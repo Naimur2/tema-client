@@ -19,7 +19,7 @@ const Actions = ({ row }: { row: IUser }) => {
   const handleDelete = async () => {
     MySwal.fire({
       title: "Are you sure?",
-      text: "You will not be able to recover this team!",
+      text: "You will not be able to recover this user!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes, delete it!",
