@@ -1,14 +1,17 @@
-import { Button } from "flowbite-react";
+
 import { useNavigate } from "react-router";
 import DataTable, { TableColumn } from "react-data-table-component";
 import { useDeleteAUserMutation, useGetUsersQuery } from "store/apis/auth";
-import { FaCheck, FaPencilAlt, FaTimes } from "react-icons/fa";
-import { formatShortSocialDateTime } from "utils/date-formatter";
+import {  FaPencilAlt,  } from "react-icons/fa";
+
 import CustomModal from "components/common/CustomModal";
 import { AiFillEye, AiTwotoneDelete } from "react-icons/ai";
 import ViewAUserRow from "components/ViewAUserRow";
 import { IUser } from "types/user";
 import MySwal from "components/MySwal";
+import ReactImageFallback from "react-image-fallback";
+
+
 
 const Actions = ({ row }: { row: IUser }) => {
   const [deleteAUser] = useDeleteAUserMutation();
@@ -62,10 +65,12 @@ const columns: TableColumn<IUser>[] = [
     cell(row, rowIndex, column, id) {
       return (
         <div className="flex gap-4 items-center">
-          <img
+          <ReactImageFallback
             className="w-10 h-10 rounded-full"
             src={row?.image_path}
             alt={row?.first_name}
+            fallbackImage={'/dummy-profile.jpg'}
+            initialImage={'/dummy-profile.jpg'}
           />
           <h5 className="">
             {row?.first_name || ""} {row?.last_name || ""}
