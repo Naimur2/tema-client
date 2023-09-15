@@ -20,7 +20,7 @@ const ViewAUserRow = ({ row }: IViewAUserRow) => {
       {/* <Label className="font-bold underline underline-offset-4">
         Detaile
       </Label> */}
-      <div className="grid gap-5 xl:grid-cols-3">
+      <div className="grid gap-5 xl:grid-cols-2">
         {/* <div>
           <Label>Name</Label>
           <p className="text-gray-600 dark:text-gray-400">
@@ -77,10 +77,10 @@ const ViewAUserRow = ({ row }: IViewAUserRow) => {
             {row?.bed_preference || ""}
           </p>
         </div>
-        {/* <div>
-          <Label>Role</Label>
-          <p className="text-gray-600 dark:text-gray-400">{row?.role || ""}</p>
-        </div> */}
+        <div>
+          <Label>Dietary Restrictions</Label>
+          <p className="text-gray-600 dark:text-gray-400">{row?.alargeDesc || "N/A"}</p>
+        </div>
         <div>
           <Label>Active</Label>
           <p className="text-gray-600 dark:text-gray-400">

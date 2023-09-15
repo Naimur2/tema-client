@@ -21,6 +21,7 @@ export interface IUser {
   is_active?: boolean;
   team_id?: Partial<ITeamId>;
   image_path?: string;
+  alargeDesc?: string;
   __v?: number;
 }
 
