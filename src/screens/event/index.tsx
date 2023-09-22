@@ -1,11 +1,12 @@
 import { Button } from "flowbite-react";
 import { useNavigate } from "react-router";
-import { useDeleteTeamMutation, useGetTeamsQuery } from "store/apis/team";
+
 import DataTable, { TableColumn } from "react-data-table-component";
 import MySwal from "components/MySwal";
 import { useDeleteEventMutation, useGetEventsQuery } from "store/apis/event";
-import { formatShortSocialDateTime } from "utils/date-formatter";
+
 import { IEvent, IEventAction } from "types/event";
+import dayjs from "dayjs";
 
 // interface IEvent {
 //   _id?: string;
@@ -77,13 +78,13 @@ const columns: TableColumn<IEvent>[] = [
   },
   {
     name: "Starting Date",
-    selector: (row) => formatShortSocialDateTime(row?.starting_date || ""),
+    selector: (row) => dayjs(row?.starting_date || "").format('YYYY-MM-DD'),
     minWidth: "200px",
     wrap: true,
   },
   {
     name: "Ending Date",
-    selector: (row) => formatShortSocialDateTime(row?.ending_date || ""),
+    selector: (row) => dayjs(row?.ending_date || "").format('YYYY-MM-DD'),
     minWidth: "200px",
     wrap: true,
   },

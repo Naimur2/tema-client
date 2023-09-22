@@ -1,8 +1,9 @@
+import dayjs from "dayjs";
 import { Label } from "flowbite-react";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import ReactImageFallback from "react-image-fallback";
 import { IUser } from "types/user";
-import { formatShortSocialDateTime } from "utils/date-formatter";
+
 
 interface IViewAUserRow {
   row?: IUser;
@@ -65,13 +66,13 @@ const ViewAUserRow = ({ row }: IViewAUserRow) => {
         <div>
           <Label>Arrival Date</Label>
           <p className="text-gray-600 dark:text-gray-400">
-            {formatShortSocialDateTime(row?.arrival_date || "")}
+            {dayjs(row?.arrival_date).format('YYYY-MM-DD')}
           </p>
         </div>
         <div>
           <Label>Departure Date</Label>
           <p className="text-gray-600 dark:text-gray-400">
-            {formatShortSocialDateTime(row?.departure_date || "")}
+            {dayjs(row?.departure_date).format('YYYY-MM-DD')}
           </p>
         </div>
         <div>
