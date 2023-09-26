@@ -22,6 +22,8 @@ export interface IUser {
   team_id?: Partial<ITeamId>;
   image_path?: string;
   alargeDesc?: string;
+  remainingItems?: number;
+  hasVerifiedEmail?: boolean;
   __v?: number;
 }
 

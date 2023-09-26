@@ -45,8 +45,8 @@ const CreateEvent = () => {
           await createEvent({
             name: values.name,
             team_id: values.team_id,
-            starting_date: new Date(values.starting_date),
-            ending_date: new Date(values.ending_date),
+            starting_date: values.starting_date as any,
+            ending_date: values.ending_date as any,
             location: values?.location,
             image: data?.[0]?.fileUrl,
           }).unwrap();

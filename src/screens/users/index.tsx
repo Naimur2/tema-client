@@ -1,8 +1,7 @@
-
 import { useNavigate } from "react-router";
 import DataTable, { TableColumn } from "react-data-table-component";
 import { useDeleteAUserMutation, useGetUsersQuery } from "store/apis/auth";
-import {  FaPencilAlt,  } from "react-icons/fa";
+import { FaPencilAlt } from "react-icons/fa";
 
 import CustomModal from "components/common/CustomModal";
 import { AiFillEye, AiTwotoneDelete } from "react-icons/ai";
@@ -10,8 +9,8 @@ import ViewAUserRow from "components/ViewAUserRow";
 import { IUser } from "types/user";
 import MySwal from "components/MySwal";
 import ReactImageFallback from "react-image-fallback";
-
-
+import { Button } from "flowbite-react";
+import CsvDownloader from "react-csv-downloader";
 
 const Actions = ({ row }: { row: IUser }) => {
   const [deleteAUser] = useDeleteAUserMutation();
@@ -69,8 +68,8 @@ const columns: TableColumn<IUser>[] = [
             className="w-10 h-10 rounded-full"
             src={row?.image_path}
             alt={row?.first_name}
-            fallbackImage={'/dummy-profile.jpg'}
-            initialImage={'/dummy-profile.jpg'}
+            fallbackImage={"/dummy-profile.jpg"}
+            initialImage={"/dummy-profile.jpg"}
           />
           <h5 className="">
             {row?.first_name || ""} {row?.last_name || ""}
@@ -94,8 +93,8 @@ const columns: TableColumn<IUser>[] = [
     wrap: true,
   },
   {
-    name: "Mobile Number",
-    selector: (row) => row?.mobile_number || "",
+    name: "Remaining Items",
+    selector: (row) => row?.remainingItems || "12",
     minWidth: "150px",
     wrap: true,
   },
@@ -147,19 +146,24 @@ const columns: TableColumn<IUser>[] = [
 
 const UsersTable = () => {
   const { data, isLoading } = useGetUsersQuery(undefined);
+
   // console.log("users table data: ", data);
   // const navigate = useNavigate();
 
+  const downloadCSV = () => {};
+
   return (
     <div>
-      {/* <div className="flex justify-end">
-        <Button
-          onClick={() => navigate("/dashboard/users/create")}
-          className="bg-primary-900 hover:bg-primary-700"
-        >
-          Create User
-        </Button>
-      </div> */}
+      <div className="flex justify-end">
+        <CsvDownloader datas={(data?.data || []) as any} filename="users">
+          <Button
+            onClick={downloadCSV}
+            className="bg-primary-900 hover:bg-primary-700"
+          >
+            Download CSV
+          </Button>
+        </CsvDownloader>
+      </div>
       <div className="mt-4">
         <DataTable
           columns={columns}
