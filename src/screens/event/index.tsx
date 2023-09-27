@@ -82,6 +82,7 @@ const columns: TableColumn<IEvent>[] = [
       dayjs(row?.starting_date || "").format("DD MMM YYYY, hh:mm:A"),
     minWidth: "200px",
     wrap: true,
+    sortable: true,
   },
   {
     name: "Ending Date",
@@ -89,6 +90,7 @@ const columns: TableColumn<IEvent>[] = [
       dayjs(row?.ending_date || "").format("DD MMM YYYY, hh:mm:A"),
     minWidth: "200px",
     wrap: true,
+    sortable: true,
   },
   {
     name: "Actions",
