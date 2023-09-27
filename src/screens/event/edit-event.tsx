@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import dayjs from "dayjs";
 import { useUploadImageMutation } from "store/apis/uploadImage";
 import { IEventInitialValues } from "types/event";
+import DatePicker from "react-datepicker";
 
 // interface TeamId {
 //   _id?: string;
@@ -130,11 +131,11 @@ const EditEvent = () => {
       setFieldValue("team_id", data?.data?.team_id?._id);
       setFieldValue(
         "starting_date",
-        dayjs(data?.data?.starting_date).toISOString()
+        dayjs(data?.data?.starting_date).format("MMMM d, YYYY h:mm a")
       );
       setFieldValue(
         "ending_date",
-        dayjs(data?.data?.ending_date).toISOString()
+        dayjs(data?.data?.ending_date).format("MMMM d, YYYY h:mm a")
       );
 
       setFieldValue("imageName", data?.data?.image);
@@ -189,30 +190,34 @@ const EditEvent = () => {
         <div className="grid gap-8 sm:grid-cols-2">
           <div className="mb-4 flex flex-col gap-4">
             <Label htmlFor="starting_date">Event Start date</Label>
-            <TextInput
-              id="starting_date"
-              placeholder="Enter starting date"
-              helperText={touched.starting_date && errors.starting_date}
-              {...getFieldProps("starting_date")}
-              value={
-                values?.starting_date &&
-                new Date(values?.starting_date).toISOString().slice(0, -1)
+
+            <DatePicker
+              selected={
+                values?.starting_date ? new Date(values?.starting_date) : new Date()
               }
-              type="datetime-local"
+              value={new Date(values?.starting_date) as any}
+              showTimeInput
+              onChange={(date) => {
+                setFieldValue("starting_date", date);
+              }}
+              className="block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-50 border-gray-300 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500 p-2.5 text-sm rounded-lg"
+              dateFormat="MMMM d, yyyy h:mm aa"
+              id="starting_date"
             />
           </div>
           <div className="mb-4 flex flex-col gap-4">
             <Label htmlFor="ending_date">Event End date</Label>
-            <TextInput
-              id="ending_date"
-              placeholder="Enter starting date"
-              helperText={touched.ending_date && errors.ending_date}
-              {...getFieldProps("ending_date")}
-              type="datetime-local"
-              value={
-                values?.ending_date &&
-                new Date(values?.ending_date).toISOString().slice(0, -1)
+            <DatePicker
+              selected={
+                values?.ending_date ? new Date(values?.ending_date) : new Date()
               }
+              value={new Date(values?.ending_date) as any}
+              showTimeInput
+              onChange={(date) => {
+                setFieldValue("ending_date", date);
+              }}
+              className="input block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-50 border-gray-300 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500 p-2.5 text-sm rounded-lg"
+              dateFormat="MMMM d, yyyy h:mm aa"
             />
           </div>
         </div>
@@ -226,8 +231,11 @@ const EditEvent = () => {
             accept="image/*"
             onChange={(event: any) => {
               setFieldValue("image", event.currentTarget.files[0]);
-              if(event.currentTarget.files[0]) {
-                setFieldValue("imageName", URL.createObjectURL(event.currentTarget.files[0]));
+              if (event.currentTarget.files[0]) {
+                setFieldValue(
+                  "imageName",
+                  URL.createObjectURL(event.currentTarget.files[0])
+                );
               }
             }}
           />
@@ -240,7 +248,6 @@ const EditEvent = () => {
             src={values?.imageName}
             alt="event image"
             className="w-40 h-40 object-cover"
-            
           />
         </div>
         <div className="mb-4 flex flex-col gap-4">

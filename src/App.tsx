@@ -1,5 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { Suspense, lazy } from "react";
+import "react-datepicker/dist/react-datepicker.css";
+
 import Loader from "components/Loader";
 import Layout from "layouts/navbar-sidebar";
 

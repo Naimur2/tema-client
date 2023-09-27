@@ -78,13 +78,15 @@ const columns: TableColumn<IEvent>[] = [
   },
   {
     name: "Starting Date",
-    selector: (row) => dayjs(row?.starting_date || "").format('YYYY-MM-DD'),
+    selector: (row) =>
+      dayjs(row?.starting_date || "").format("DD MMM YYYY, hh:mm:A"),
     minWidth: "200px",
     wrap: true,
   },
   {
     name: "Ending Date",
-    selector: (row) => dayjs(row?.ending_date || "").format('YYYY-MM-DD'),
+    selector: (row) =>
+      dayjs(row?.ending_date || "").format("DD MMM YYYY, hh:mm:A"),
     minWidth: "200px",
     wrap: true,
   },
