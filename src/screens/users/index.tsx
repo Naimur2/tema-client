@@ -11,6 +11,7 @@ import MySwal from "components/MySwal";
 import ReactImageFallback from "react-image-fallback";
 import { Button } from "flowbite-react";
 import CsvDownloader from "react-csv-downloader";
+import dayjs from "dayjs";
 
 const Actions = ({ row }: { row: IUser }) => {
   const [deleteAUser] = useDeleteAUserMutation();
@@ -98,12 +99,12 @@ const columns: TableColumn<IUser>[] = [
     minWidth: "150px",
     wrap: true,
   },
-  // {
-  //   name: "Shirt Size",
-  //   selector: (row) => row?.shirt_size || "",
-  //   minWidth: "30px",
-  //   wrap: true,
-  // },
+  {
+    name: "Team",
+    selector: (row) => row?.team_id?.name || "N/A",
+    minWidth: "30px",
+    wrap: true,
+  },
   // {
   //   name: "Arrival Date",
   //   selector: (row) => formatShortSocialDateTime(row?.arrival_date || ""),
@@ -150,20 +151,29 @@ const UsersTable = () => {
   // console.log("users table data: ", data);
   // const navigate = useNavigate();
 
-  const downloadCSV = () => {};
+  const dataToSave = data?.data?.map((item) => ({
+    ...item,
+    "Team Name": item?.team_id?.name || "N/A",
+    "Team Color": item?.team_id?.color || "N/A",
+    "Team Score": item?.team_id?.score || "N/A",
+    "Team Image": item?.team_id?.image || "N/A",
+    team_id: item?.team_id?._id || "N/A",
+  }));
 
   return (
     <div>
-      <div className="flex justify-end">
-        <CsvDownloader datas={(data?.data || []) as any} filename="users">
-          <Button
-            onClick={downloadCSV}
-            className="bg-primary-900 hover:bg-primary-700"
+      {!isLoading && (
+        <div className="flex justify-end">
+          <CsvDownloader
+            datas={(dataToSave || []) as any}
+            filename={`users-${dayjs().format("DD-MM-YYYY_h:mm:a")}`}
           >
-            Download CSV
-          </Button>
-        </CsvDownloader>
-      </div>
+            <Button className="bg-primary-900 hover:bg-primary-700">
+              Download CSV
+            </Button>
+          </CsvDownloader>
+        </div>
+      )}
       <div className="mt-4">
         <DataTable
           columns={columns}

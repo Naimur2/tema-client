@@ -129,13 +129,10 @@ const EditEvent = () => {
     if (data) {
       setFieldValue("name", data?.data?.name);
       setFieldValue("team_id", data?.data?.team_id?._id);
-      setFieldValue(
-        "starting_date",
-        dayjs(data?.data?.starting_date).format("MMMM d, YYYY h:mm a")
-      );
+      setFieldValue("starting_date", data?.data?.starting_date);
       setFieldValue(
         "ending_date",
-        dayjs(data?.data?.ending_date).format("MMMM d, YYYY h:mm a")
+        data?.data?.ending_date
       );
 
       setFieldValue("imageName", data?.data?.image);

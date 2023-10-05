@@ -83,6 +83,10 @@ const columns: TableColumn<IEvent>[] = [
     minWidth: "200px",
     wrap: true,
     sortable: true,
+    sortFunction: (a, b) => {
+      // @ts-ignore
+      return new Date(a.starting_date) - new Date(b.starting_date);
+    },
   },
   {
     name: "Ending Date",
@@ -91,6 +95,10 @@ const columns: TableColumn<IEvent>[] = [
     minWidth: "200px",
     wrap: true,
     sortable: true,
+    sortFunction: (a, b) => {
+      // @ts-ignore
+      return new Date(a.starting_date) - new Date(b.starting_date);
+    },
   },
   {
     name: "Actions",
@@ -102,8 +110,6 @@ const columns: TableColumn<IEvent>[] = [
 export default function Data() {
   const { data, isLoading, isError } = useGetEventsQuery();
   const navigate = useNavigate();
-
-
 
   return (
     <div>
