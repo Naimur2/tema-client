@@ -83,18 +83,34 @@ const EditEvent = () => {
     },
     onSubmit: async (values) => {
       try {
-        const formData = new FormData();
-        formData.append("image", values.image);
-        const { data } = await uploadImage(formData).unwrap();
-        await updateEvent({
+        MySwal.fire({
+          title: "Please wait...",
+          text: "Creating event",
+          icon: "info",
+          allowOutsideClick: false,
+          didOpen: () => {
+            MySwal.showLoading();
+          },
+        });
+
+        const eventDat: any = {
           id,
           name: values.name,
           team_id: values.team_id,
           starting_date: values.starting_date as any,
           ending_date: values.ending_date as any,
           location: values?.location,
-          image: data?.[0]?.fileUrl,
-        }).unwrap();
+        };
+
+        if (values.image) {
+          const formData = new FormData();
+          formData.append("image", values.image);
+
+          const { data } = await uploadImage(formData).unwrap();
+          eventDat.image = data?.[0]?.fileUrl;
+        }
+
+        await updateEvent(eventDat).unwrap();
         MySwal.fire({
           title: "Success",
           text: "Event edited successfully",
@@ -115,7 +131,7 @@ const EditEvent = () => {
       starting_date: Yup.string().required("Required"),
       ending_date: Yup.string().required("Required"),
       location: Yup.string().required("Required"),
-      image: Yup.mixed().required("Required"),
+      image: Yup.mixed().optional(),
     }),
   });
 
@@ -130,10 +146,7 @@ const EditEvent = () => {
       setFieldValue("name", data?.data?.name);
       setFieldValue("team_id", data?.data?.team_id?._id);
       setFieldValue("starting_date", data?.data?.starting_date);
-      setFieldValue(
-        "ending_date",
-        data?.data?.ending_date
-      );
+      setFieldValue("ending_date", data?.data?.ending_date);
 
       setFieldValue("imageName", data?.data?.image);
 
@@ -190,7 +203,9 @@ const EditEvent = () => {
 
             <DatePicker
               selected={
-                values?.starting_date ? new Date(values?.starting_date) : new Date()
+                values?.starting_date
+                  ? new Date(values?.starting_date)
+                  : new Date()
               }
               value={new Date(values?.starting_date) as any}
               showTimeInput

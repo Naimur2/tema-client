@@ -36,20 +36,33 @@ const CreateEvent = () => {
       },
       onSubmit: async (values) => {
         try {
-          const formData = new FormData();
-          formData.append("image", values.image);
+          MySwal.fire({
+            title: "Please wait...",
+            text: "Creating event",
+            icon: "info",
+            allowOutsideClick: false,
+            didOpen: () => {
+              MySwal.showLoading();
+            },
+          });
 
-          const { data } = await uploadImage(formData).unwrap();
-          console.log("create event data: ", data);
-
-          await createEvent({
+          const eventData: any = {
             name: values.name,
             team_id: values.team_id,
             starting_date: values.starting_date as any,
             ending_date: values.ending_date as any,
             location: values?.location,
-            image: data?.[0]?.fileUrl,
-          }).unwrap();
+          };
+
+          if (values.image) {
+            const formData = new FormData();
+            formData.append("image", values.image);
+
+            const { data } = await uploadImage(formData).unwrap();
+            eventData.image = data?.[0]?.fileUrl;
+          }
+
+          await createEvent(eventData).unwrap();
           MySwal.fire({
             title: "Success",
             text: "Event aded successfully",
@@ -70,7 +83,7 @@ const CreateEvent = () => {
         starting_date: Yup.string().required("Required"),
         ending_date: Yup.string().required("Required"),
         location: Yup.string().required("Required"),
-        image: Yup.mixed().required("Required"),
+        image: Yup.mixed().optional(),
       }),
     });
 

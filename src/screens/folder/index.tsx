@@ -53,6 +53,19 @@ export default function FolderList() {
           {({ setOpenModal }) => {
             const onSubmit: TCreateFolderOnSubmit = async (values) => {
               try {
+                MySwal.fire({
+                  title: "Please wait...",
+                  text: "Creating folder",
+                  icon: "info",
+                  allowOutsideClick: false,
+                  allowEscapeKey: false,
+                  allowEnterKey: false,
+                  showConfirmButton: false,
+                  showCancelButton: false,
+                  didOpen: () => {
+                    MySwal.showLoading();
+                  },
+                });
                 await createFolder({
                   name: values.name,
                 }).unwrap();

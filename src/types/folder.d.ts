@@ -44,6 +44,7 @@ export type TThumbnailAndFile =
       fileName?: string;
       originalFileUrl?: string;
       id?: string | number;
+      fileType?: string;
     }
   | undefined;
 

@@ -9,20 +9,27 @@ import { Provider } from "react-redux";
 import store, { persitedStore } from "./store";
 import { PersistGate } from "redux-persist/integration/react";
 import Loader from "components/Loader";
+import ModalWrapper from "modal/components/ModalWrapper";
 
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
+    document.getElementById("root") as HTMLElement
 );
 root.render(
-  <Flowbite theme={{ theme, dark: true }}>
-    <HashRouter>
-      <Provider store={store}>
-        <PersistGate loading={<Loader isLoading />} persistor={persitedStore}>
-          <App />
-        </PersistGate>
-      </Provider>
-    </HashRouter>
-  </Flowbite>
+    <Flowbite theme={{ theme, dark: true }}>
+        <HashRouter>
+            <Provider store={store}>
+                <PersistGate
+                    loading={<Loader isLoading />}
+                    persistor={persitedStore}
+                >
+                    {" "}
+                    <ModalWrapper>
+                        <App />
+                    </ModalWrapper>
+                </PersistGate>
+            </Provider>
+        </HashRouter>
+    </Flowbite>
 );
 
 // If you want to start measuring performance in your app, pass a function

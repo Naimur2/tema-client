@@ -35,7 +35,12 @@ export default function LoginScreen() {
 
   return (
     <div className="flex flex-col items-center justify-center px-6 lg:h-screen lg:gap-y-12">
-      <div className="my-6 flex items-center gap-x-1 lg:my-0">
+      <div className="my-6 flex items-center gap-x-1 lg:my-0 gap-4">
+        <img
+          src="/logo.jpg"
+          alt="logo"
+          className="w-10 h-10 bg-primary-100 object-contain mr-3"
+        />
         <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
           Welcome to Tema Admin
         </span>

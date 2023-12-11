@@ -52,6 +52,7 @@ export const getThumbnailAndFile = async (fileData?: IFile) => {
       fileName,
       originalFileUrl: fileData?.fileUrl ?? "",
       id: fileData?._id ?? "N/A",
+      fileType: fileData?.fileType ?? "",
     };
   } else {
     console.error("Failed to convert file.");
